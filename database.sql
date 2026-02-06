@@ -52,31 +52,37 @@ CREATE TABLE `experiences` (
   `lat` decimal(10,8) DEFAULT NULL,
   `lng` decimal(11,8) DEFAULT NULL,
   `country` varchar(2) DEFAULT NULL,
+  `region_slug` varchar(50) DEFAULT NULL,
   `difficulty` enum('easy','medium','hard') DEFAULT 'medium',
   `duration_minutes` int(11) DEFAULT 60,
   `image_url` varchar(255) DEFAULT 'default.jpg',
   `is_active` tinyint(1) DEFAULT 1,
-  `is_bookable` tinyint(1) DEFAULT 1,
+  `can_buy_voucher` tinyint(1) DEFAULT 1,
   `contact_phone` varchar(50) DEFAULT NULL,
   `contact_email` varchar(100) DEFAULT NULL,
   `contact_website` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `subcategory_id` (`subcategory_id`),
+  KEY `idx_region` (`region_slug`),
   CONSTRAINT `experiences_ibfk_1` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `experiences` (`id`, `subcategory_id`, `title_sk`, `title_cz`, `title_pl`, `title_en`, `title_de`, `desc_sk`, `desc_cz`, `desc_pl`, `desc_en`, `desc_de`, `price_sk`, `price_cz`, `price_pl`, `lat`, `lng`, `country`, `difficulty`, `duration_minutes`, `image_url`, `is_active`, `is_bookable`, `contact_phone`, `contact_email`, `contact_website`) VALUES
-(1,	3,	'Bungee z mostu Lafranconi',	'Bungee z mostu Lafranconi',	'Bungee jumping Lafranconi',	'Bungee Jump from Lafranconi Bridge',	'Bungee-Sprung von der Lafranconi-Brücke',	'Legendárny zoskok do kyvadla nad Dunajom.',	'Legendární seskok do kyvadla nad Dunajem.',	'Legendarny skok wahadłowy nad Dunajem.',	'Legendary pendulum jump over the Danube river.',	'Legendärer Pendelsprung über die Donau.',	50.00,	1250.00,	220.00,	48.14816300,	17.07246500,	'sk',	'hard',	45,	'https://images.unsplash.com/photo-1522069634954-469a4736f875?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(2,	6,	'Akčná streľba zo samopalu',	'Akční střelba ze samopalu',	'Strzelanie z pistoletu maszynowego',	'Action Shooting Experience',	'Action-Schießen mit Maschinenpistole',	'Vyskúšajte si silu AK-47 a ďalších legendárnych zbraní.',	'Vyzkoušejte si sílu AK-47 a dalších legendárních zbraní.',	'Spróbuj siły AK-47 i innych legendarnych broni.',	'Try the power of the AK-47 and other legendary weapons.',	'Probieren Sie die Kraft der AK-47 und anderer legendärer Waffen aus.',	80.00,	2000.00,	350.00,	48.19652000,	17.03458000,	'sk',	'medium',	90,	'https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(3,	1,	'Rafting na divokej vode',	'Rafting na divoké vodě',	'Rafting na dzikiej wodzie',	'Whitewater Rafting',	'Wildwasser-Rafting',	'Zíďte olympijský kanál s inštruktorom.',	'Sjeďte olympijský kanál s instruktorem.',	'Spłyń kanałem olimpijskim z instruktorem.',	'Ride down the Olympic channel with an instructor.',	'Fahren Sie den olympischen Kanal mit einem Instruktor hinunter.',	35.00,	890.00,	150.00,	48.03157200,	17.23094800,	'sk',	'hard',	120,	'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(4,	8,	'Víkendový Wellness v Tatrách',	'Víkendový Wellness v Tatrách',	'Weekend Wellness w Tatrach',	'Weekend Wellness in Tatras',	'Wellness-Wochenende in der Tatra',	'Luxusný hotel s výhľadom na štíty, sauna a bazén v cene.',	'Luxusní hotel s výhledem na štíty, sauna a bazén v ceně.',	'Luksusowy hotel s widokiem na szczyty, sauna i basen w cenie.',	'Luxury hotel with mountain views, sauna and pool included.',	'Luxushotel mit Bergblick, Sauna und Pool inklusive.',	250.00,	6200.00,	1100.00,	49.12053600,	20.06233400,	'sk',	'easy',	2880,	'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(5,	5,	'Thajská masáž chrbta',	'Thajská masáž zad',	'Tajski masaż pleców',	'Thai Back Massage',	'Thailändische Rückenmassage',	'Uvoľnite sa pod rukami skúsených terapeutiek.',	'Uvolněte se pod rukama zkušených terapeutek.',	'Zrelaksuj się pod okiem doświadczonych terapeutów.',	'Relax under the hands of experienced therapists.',	'Entspannen Sie sich unter den Händen erfahrener Therapeuten.',	45.00,	1100.00,	190.00,	48.14452000,	17.11245000,	'sk',	'easy',	60,	'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(7,	7,	'Jazda vo Ferrari 488',	'Jízda ve Ferrari 488',	'Jazda Ferrari 488',	'Ferrari 488 Driving',	'Ferrari 488 fahren',	'Splňte si sen a šoférujte taliansky supersport na diaľnici alebo okruhu.',	'Splňte si sen a řiďte italský supersport na dálnici nebo okruhu.',	'Spełnij marzenie i poprowadź włoski supersamochód.',	'Fulfil your dream and drive an Italian supercar.',	'Erfüllen Sie sich Ihren Traum und fahren Sie einen italienischen Supersportwagen.',	199.00,	4990.00,	890.00,	48.05456000,	17.56452000,	'sk',	'medium',	30,	'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(8,	7,	'Jazda v Tesla Model S Plaid',	'Jízda v Tesla Model S Plaid',	'Jazda Tesla Model S Plaid',	'Tesla Model S Plaid Drive',	'Fahrt im Tesla Model S Plaid',	'Zažite brutálne zrýchlenie elektromobilu.',	'Zažijte brutální zrychlení elektromobilu.',	'Przeżyj brutalne przyspieszenie samochodu elektrycznego.',	'Experience the brutal acceleration of an electric car.',	'Erleben Sie die brutale Beschleunigung eines Elektroautos.',	120.00,	3000.00,	550.00,	50.07553800,	14.43780000,	'cz',	'easy',	45,	'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=80',	1,	0,	'+421 900 123 456',	'info@tesla-experience.sk',	'https://www.tesla.com'),
-(9,	7,	'Offroad expedícia Hummer',	'Offroad expedice Hummer',	'Wyprawa off-road Hummer',	'Hummer Off-road Expedition',	'Offroad-Expedition Hummer',	'Blato, kopce a nezastaviteľný stroj.',	'Bláto, kopce a nezastavitelný stroj.',	'Błoto, wzgórza i niepowstrzymana maszyna.',	'Mud, hills and an unstoppable machine.',	'Schlamm, Hügel und eine unaufhaltsame Maschine.',	150.00,	3800.00,	680.00,	49.19506000,	16.60683700,	'cz',	'hard',	180,	'https://images.unsplash.com/photo-1533473359331-0135ef1bcfb0?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(10,	8,	'Degustácia vín na Morave',	'Degustace vín na Moravě',	'Degustacja win na Morawach',	'Wine Tasting in Moravia',	'Weinprobe in Mähren',	'Prehliadka pivnice s ochutnávkou 10 vzoriek.',	'Prohlídka sklípku s ochutnávkou 10 vzorků.',	'Zwiedzanie piwnicy z degustacją 10 próbek.',	'Cellar tour with tasting of 10 local wine samples.',	'Kellerbesichtigung mit Verkostung von 10 Weinproben.',	40.00,	990.00,	180.00,	48.80556000,	16.63789000,	'cz',	'easy',	120,	'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(11,	8,	'Kurz varenia sushi',	'Kurz vaření sushi',	'Kurs robienia sushi',	'Sushi Cooking Course',	'Sushi-Kochkurs',	'Naučte sa pripravovať dokonalé rolky od majstra šéfkuchára.',	'Naučte se připravovat dokonalé rolky od mistra šéfkuchaře.',	'Naucz się robić idealne sushi od mistrza kuchni.',	'Learn to prepare perfect sushi rolls from a master chef.',	'Lernen Sie, perfekte Sushi-Rollen von einem Meisterkoch zuzubereiten.',	90.00,	2200.00,	400.00,	50.06465000,	19.94498000,	'pl',	'medium',	180,	'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
-(12,	2,	'Vyhliadková veža UFO',	'Vyhlídková věž UFO',	'Wieża widokowa UFO',	NULL,	NULL,	'Ikonická vyhliadka v Bratislave s panoramatickým výhľadom.',	NULL,	NULL,	NULL,	NULL,	0.00,	0.00,	0.00,	NULL,	NULL,	NULL,	'medium',	60,	'https://images.unsplash.com/photo-1562591970-254bc62245c0?auto=format&fit=crop&w=800&q=80',	1,	0,	'+421 2 6241 1307',	NULL,	'https://www.ufo.sk');
+INSERT INTO `experiences` (`id`, `subcategory_id`, `title_sk`, `title_cz`, `title_pl`, `title_en`, `title_de`, `desc_sk`, `desc_cz`, `desc_pl`, `desc_en`, `desc_de`, `price_sk`, `price_cz`, `price_pl`, `lat`, `lng`, `country`, `region_slug`, `difficulty`, `duration_minutes`, `image_url`, `is_active`, `can_buy_voucher`, `contact_phone`, `contact_email`, `contact_website`) VALUES
+(1,	3,	'Bungee jumping Lafranconi',	'Bungee jumping Lafranconi',	'Bungee Lafranconi',	'Bungee Jump',	NULL,	'Zoskok z mosta nad Dunajom.',	'Seskok z mostu nad Dunajem.',	NULL,	NULL,	NULL,	59.00,	1490.00,	260.00,	48.14810000,	17.07240000,	'sk',	'bratislava',	'medium',	30,	'https://images.unsplash.com/photo-1522069634954-469a4736f875',	1,	1,	NULL,	NULL,	NULL),
+(2,	8,	'Noc v luxusnom glampingu',	'Noc v luxusním glampingu',	'Noc w glampingu',	'Luxury Glamping Night',	NULL,	'Romantický pobyt v prírode s vírivkou.',	'Romantický pobyt v přírodě s vířivkou.',	NULL,	NULL,	NULL,	150.00,	3800.00,	650.00,	48.55000000,	19.15000000,	'sk',	'stredne-slovensko',	'medium',	1440,	'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7',	1,	1,	NULL,	NULL,	NULL),
+(3,	11,	'Vstup do DinoParku',	'Vstup do DinoParku',	'Wstęp do DinoParku',	'DinoPark Entry',	NULL,	'Zábava pre celú rodinu medzi dinosaurami.',	'Zábava pro celou rodinu mezi dinosaury.',	NULL,	NULL,	NULL,	15.00,	390.00,	65.00,	48.15000000,	17.05000000,	'sk',	'bratislava',	'medium',	180,	'https://images.unsplash.com/photo-1551390313-05459392e210',	1,	1,	NULL,	NULL,	NULL),
+(4,	1,	'Rafting v Čunove',	'Rafting v Čunovu',	'Rafting w Cunovo',	'Whitewater Rafting',	NULL,	'Divoká voda na olympijskom kanáli.',	'Divoká voda na olympijském kanálu.',	NULL,	NULL,	NULL,	35.00,	890.00,	150.00,	48.03150000,	17.23090000,	'sk',	'bratislava',	'medium',	120,	'https://images.unsplash.com/photo-1530866495561-507c9faab2ed',	1,	1,	NULL,	NULL,	NULL),
+(5,	5,	'Lyžovačka na Chopku',	'Lyžování na Chopku',	'Narty na Chopoku',	'Skiing Jasna',	NULL,	'Celodenný skipas do najlepšieho strediska.',	'Celodenní skipas do nejlepšího střediska.',	NULL,	NULL,	NULL,	49.00,	1250.00,	210.00,	48.94000000,	19.59000000,	'sk',	'nizke-tatry',	'medium',	480,	'https://images.unsplash.com/photo-1551698618-1dfe5d97d256',	1,	1,	NULL,	NULL,	NULL),
+(6,	7,	'Jazda na Ferrari v Brne',	'Jízda na Ferrari v Brně',	'Jazda Ferrari Brno',	'Ferrari Drive Brno',	NULL,	'Vyskúšajte silu 600 koní na okruhu.',	'Vyzkoušejte sílu 600 koní na okruhu.',	NULL,	NULL,	NULL,	199.00,	4990.00,	890.00,	49.20330000,	16.44440000,	'cz',	'morava',	'medium',	45,	'https://images.unsplash.com/photo-1583121274602-3e2820c69888',	1,	1,	NULL,	NULL,	NULL),
+(7,	13,	'Thajská masáž v Prahe',	'Thajská masáž v Praze',	'Masaż tajski Praga',	'Thai Massage Prague',	NULL,	'Tradičná uvoľňujúca technika.',	'Tradiční uvolňující technika.',	NULL,	NULL,	NULL,	45.00,	1100.00,	190.00,	50.07550000,	14.43780000,	'cz',	'praha',	'medium',	60,	'https://images.unsplash.com/photo-1544161515-4ab6ce6db874',	1,	1,	NULL,	NULL,	NULL),
+(8,	4,	'Let balónom nad Karlštejnom',	'Let balónem nad Karlštejnem',	'Lot balonem Karlstejn',	'Balloon Flight',	NULL,	'Ikonický výhľad na český hrad.',	'Ikonický výhled na český hrad.',	NULL,	NULL,	NULL,	180.00,	4500.00,	780.00,	49.93900000,	14.18800000,	'cz',	'stredne-cechy',	'medium',	60,	'https://images.unsplash.com/photo-1507608158173-1dcec673a2e5',	1,	1,	NULL,	NULL,	NULL),
+(9,	6,	'Kurz varenia piva v Plzni',	'Kurz vaření piva v Plzni',	'Kurs warzenia piwa',	'Beer Brewing Course',	NULL,	'Uvarte si vlastnú várku piva s majstrom.',	'Uvařte si vlastní várku piva s mistrem.',	NULL,	NULL,	NULL,	79.00,	1990.00,	350.00,	49.74750000,	13.37750000,	'cz',	'zapadne-cechy',	'medium',	360,	'https://images.unsplash.com/photo-1535958636474-b021ee887b13',	1,	0,	'+420 123 456 789',	'pivo@plzen.cz',	'https://www.plzenpivo.cz'),
+(10,	12,	'Národné technické múzeum',	'Národní technické muzeum',	'Muzeum Techniki Praga',	'Technical Museum',	NULL,	'Expozícia historických áut a lietadiel.',	'Expozice historických aut a letadel.',	NULL,	NULL,	NULL,	10.00,	250.00,	45.00,	50.09750000,	14.42500000,	'cz',	'praha',	'medium',	120,	'https://images.unsplash.com/photo-1566378246598-5b11a0ff7f6c',	1,	0,	'+420 987 654 321',	'info@ntm.cz',	'https://www.ntm.cz'),
+(11,	6,	'Strelnica v Krakove',	'Střelnice v Krakově',	'Strzelnica Kraków',	'Shooting Range',	NULL,	'Zastrieľajte si z AK-47 a Glocku.',	'Zastřílejte si z AK-47 a Glocku.',	NULL,	NULL,	NULL,	40.00,	1000.00,	180.00,	50.06460000,	19.94490000,	'pl',	'malopolska',	'medium',	60,	'https://images.unsplash.com/photo-1595590424283-b8f17842773f',	1,	1,	NULL,	NULL,	NULL),
+(12,	10,	'Horská chata v Zakopanom',	'Horská chata v Zakopaném',	'Domek v Zakopanem',	'Zakopane Cabin',	NULL,	'Ubytovanie v srdci poľských Tatier.',	'Ubytování v srdci polských Tater.',	NULL,	NULL,	NULL,	90.00,	2200.00,	400.00,	49.29910000,	19.94890000,	'pl',	'tatry',	'medium',	1440,	'https://images.unsplash.com/photo-1518732714860-b62714ce0c59',	1,	1,	NULL,	NULL,	NULL),
+(13,	2,	'Plavba jachtou v Gdansku',	'Plavba jachtou v Gdaňsku',	'Rejs jachtem Gdańsk',	'Yacht Cruise',	NULL,	'Súkromná plavba po Baltskom mori.',	'Soukromá plavba po Baltském moři.',	NULL,	NULL,	NULL,	200.00,	5000.00,	850.00,	54.35200000,	18.64660000,	'pl',	'balt',	'medium',	120,	'https://images.unsplash.com/photo-1534447677768-be436bb09401',	1,	0,	'+48 500 600 700',	'marine@gdansk.pl',	'https://www.gdansk-jachty.pl'),
+(14,	11,	'Energylandia Zator',	'Energylandia Zator',	'Energylandia',	'Energylandia Park',	NULL,	'Najväčší zábavný park v strednej Európe.',	'Největší zábavní park ve střední Evropě.',	NULL,	NULL,	NULL,	45.00,	1150.00,	199.00,	49.99700000,	19.41200000,	'pl',	'malopolska',	'medium',	480,	'https://images.unsplash.com/photo-1513889953293-4ad464fb7a79',	1,	1,	NULL,	NULL,	NULL),
+(15,	13,	'Slaný bazén vo Wieliczke',	'Slaný bazén ve Wieliczce',	'Basen solankowy Wieliczka',	'Salt Mine Pool',	NULL,	'Unikátny relax v hĺbke 100 metrov pod zemou.',	'Unikátní relax v hloubce 100 metrů pod zemí.',	NULL,	NULL,	NULL,	30.00,	750.00,	130.00,	49.98300000,	20.05500000,	'pl',	'malopolska',	'medium',	90,	'https://images.unsplash.com/photo-1560067174-c5a3a8f37060',	1,	1,	NULL,	NULL,	NULL);
 
 DROP TABLE IF EXISTS `experience_tags`;
 CREATE TABLE `experience_tags` (
@@ -90,17 +96,14 @@ CREATE TABLE `experience_tags` (
 
 INSERT INTO `experience_tags` (`experience_id`, `tag_id`) VALUES
 (3,	1),
-(9,	2),
-(2,	4),
-(4,	4),
-(5,	4),
-(10,	4),
+(14,	1),
+(7,	4),
 (11,	4),
+(15,	4),
 (1,	5),
-(3,	5),
-(7,	5),
-(8,	5),
-(9,	5);
+(4,	5),
+(5,	5),
+(6,	5);
 
 DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
@@ -128,7 +131,8 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `orders` (`id`, `market_id`, `order_number`, `status`, `email`, `first_name`, `last_name`, `phone`, `billing_street`, `billing_city`, `billing_zip`, `billing_country`, `total_amount`, `currency`, `tax_rate`, `payment_method`, `payment_id`, `created_at`, `updated_at`) VALUES
-(1,	'sk',	'202619798',	'pending',	'fruno.lu@gmail.com',	'Lukas',	'Fruno',	'+420606218592',	'Matlachova',	'Brno',	'62700',	'SK',	840.00,	'€',	20.00,	'card',	NULL,	'2026-02-05 22:18:44',	'2026-02-05 22:18:44');
+(1,	'sk',	'202619798',	'pending',	'fruno.lu@gmail.com',	'Lukas',	'Fruno',	'+420606218592',	'Matlachova',	'Brno',	'62700',	'SK',	840.00,	'€',	20.00,	'card',	NULL,	'2026-02-05 22:18:44',	'2026-02-05 22:18:44'),
+(2,	'sk',	'202634256',	'pending',	'fruno.lu@gmail.com',	'Lukas',	'Fruno',	'+421905618081',	'Riečna ulica',	'Brodzany',	'958 42',	'SK',	40.00,	'€',	20.00,	'card',	NULL,	'2026-02-06 08:48:01',	'2026-02-06 08:48:01');
 
 DROP TABLE IF EXISTS `order_items`;
 CREATE TABLE `order_items` (
@@ -146,7 +150,8 @@ INSERT INTO `order_items` (`id`, `order_id`, `experience_id`, `title_snapshot`, 
 (1,	1,	10,	'Weinprobe in Mähren',	40.00,	9),
 (2,	1,	5,	'Thailändische Rückenmassage',	45.00,	2),
 (3,	1,	9,	'Offroad expedícia Hummer',	150.00,	2),
-(4,	1,	11,	'Sushi Cooking Course',	90.00,	1);
+(4,	1,	11,	'Sushi Cooking Course',	90.00,	1),
+(5,	2,	10,	'Degustácia vín na Morave',	40.00,	1);
 
 DROP TABLE IF EXISTS `subcategories`;
 CREATE TABLE `subcategories` (
@@ -171,7 +176,12 @@ INSERT INTO `subcategories` (`id`, `category_id`, `slug`, `name_sk`, `name_cz`, 
 (5,	9,	'lyzovanie',	'Lyžovanie',	'Lyžování',	'Narciarstwo',	'Skiing',	'Skifahren'),
 (6,	6,	'strelba',	'Streľba',	'Střelba',	'Strzelanie',	'Shooting',	'Schießen'),
 (7,	6,	'auta',	'Rýchle autá',	'Rychlá auta',	'Szybkie auta',	'Fast cars',	'Schnelle Autos'),
-(8,	4,	'wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness');
+(8,	4,	'wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness'),
+(9,	1,	'top-vyber',	'TOP Výber',	'TOP Výběr',	'TOP Wybór',	'TOP Selection',	NULL),
+(10,	5,	'glamping-chaty',	'Glamping & Chaty',	'Glamping & Chaty',	'Glamping i Domki',	'Glamping & Cabins',	NULL),
+(11,	7,	'deti-zabava',	'Zábava pre deti',	'Zábava pro děti',	'Zabawa dla dzieci',	'Kids Fun',	NULL),
+(12,	8,	'vystavy-muzea',	'Výstavy & Múzeá',	'Výstavy & Muzea',	'Wystawy i Muzea',	'Exhibitions & Museums',	NULL),
+(13,	3,	'wellness-spa',	'Wellness & Spa',	'Wellness & Spa',	'Wellness & Spa',	'Wellness & Spa',	NULL);
 
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE `tags` (
@@ -194,4 +204,4 @@ INSERT INTO `tags` (`id`, `code`, `icon`, `name_sk`, `name_cz`, `name_pl`, `name
 (4,	'indoor',	'fa-building',	'Interiér (Vnútri)',	'Interiér (Uvnitř)',	'Wewnątrz',	'Indoor',	'Innenbereich'),
 (5,	'outdoor',	'fa-sun',	'Exteriér (Vonku)',	'Exteriér (Venku)',	'Na zewnątrz',	'Outdoor',	'Außenbereich');
 
--- 2026-02-06 08:28:33 UTC
+-- 2026-02-06 10:40:27 UTC
