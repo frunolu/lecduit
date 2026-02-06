@@ -16,14 +16,24 @@ class ExperienceRepository {
         return $this->pdo->query("SELECT * FROM tags ORDER BY id")->fetchAll();
     }
 
+    /**
+     * Načte tagy (vlastnosti) pro konkrétní zážitek
+     */
+    public function getTagsForExperience($id) {
+        $sql = "SELECT t.* FROM tags t 
+                JOIN experience_tags et ON t.id = et.tag_id 
+                WHERE et.experience_id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetchAll();
+    }
+
     public function search(array $filters = []) {
         $params = [];
         $suffix = '_' . $this->lang;
 
-        // Základní výběr sloupců
         $sqlSelect = "SELECT p.*, c.name$suffix as cat_name, c.slug as cat_slug, s.name$suffix as sub_name";
 
-        // VÝPOČET VZDÁLENOSTI (Haversine Formula)
         if (!empty($filters['lat']) && !empty($filters['lng'])) {
             $sqlSelect .= ", ( 6371 * acos( cos( radians(:lat1) ) * cos( radians( p.lat ) ) * cos( radians( p.lng ) - radians(:lng) ) + sin( radians(:lat2) ) * sin( radians( p.lat ) ) ) ) AS distance";
             $params[':lat1'] = $filters['lat'];
@@ -38,7 +48,6 @@ class ExperienceRepository {
                 JOIN categories c ON s.category_id = c.id 
                 WHERE p.is_active = 1";
 
-        // Filtr zemí
         if (!empty($filters['countries'])) {
             $phs = [];
             foreach ($filters['countries'] as $k => $v) {
@@ -49,7 +58,6 @@ class ExperienceRepository {
             $sql .= " AND p.country IN (" . implode(',', $phs) . ")";
         }
 
-        // Filtr kategorií
         if (!empty($filters['cat'])) {
             $phs = [];
             foreach ((array)$filters['cat'] as $k => $v) {
@@ -60,7 +68,6 @@ class ExperienceRepository {
             $sql .= " AND c.slug IN (" . implode(',', $phs) . ")";
         }
 
-        // NOVÉ: Filtr pro Tagy (např. kids, dog, indoor)
         if (!empty($filters['tags'])) {
             $phs = [];
             foreach ((array)$filters['tags'] as $k => $v) {
@@ -75,7 +82,6 @@ class ExperienceRepository {
             )";
         }
 
-        // Filtr ceny (včetně nuly)
         if (isset($filters['min_price']) && $filters['min_price'] !== '') {
             $sql .= " AND p.{$this->priceCol} >= :min";
             $params[':min'] = $filters['min_price'];
@@ -85,13 +91,11 @@ class ExperienceRepository {
             $params[':max'] = $filters['max_price'];
         }
 
-        // Filtr rádiusu (používá vypočítanou vzdálenost)
         if (!empty($filters['lat']) && isset($filters['radius'])) {
             $sql .= " HAVING distance <= :rad";
             $params[':rad'] = $filters['radius'];
         }
 
-        // Řazení
         $sort = $filters['sort'] ?? 'newest';
         if ($sort === 'price_asc') {
             $sql .= " ORDER BY p.{$this->priceCol} ASC";
