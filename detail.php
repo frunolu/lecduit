@@ -9,7 +9,7 @@ $repo = new ExperienceRepository($lang, $price_col);
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) { header("Location: index.php"); exit; }
 
-// Načtení detailu zážitku (přidali jsme nové sloupce do SELECTu díky p.*)
+// Načítanie detailu zážitku
 $sql = "SELECT p.*, c.name$suffix as cat_name, s.name$suffix as sub_name 
         FROM experiences p 
         JOIN subcategories s ON p.subcategory_id = s.id 
@@ -23,6 +23,7 @@ if (!$p) die("Error: Zážitek nenalezen.");
 
 $productTags = $repo->getTagsForExperience($id);
 
+// Spracovanie pridania do košíka
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $cart->add($p['id'], $p['title'.$suffix], $p[$price_col]);
     header("Location: detail.php?id=$id&added=1"); exit;
@@ -31,114 +32,169 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo h($p['title'.$suffix]); ?></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo h($p['title'.$suffix]); ?> | Lecduit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
-    <script>tailwind.config = { theme: { extend: { colors: { 'lec-orange': '#e86e2d', 'lec-teal': '#58b8bc', 'lec-dark': '#0f172a' }, fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] } } } }</script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'lec-teal': '#58b8bc', 'lec-orange': '#e86e2d', 'lec-dark': '#0f172a' },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-white text-slate-900">
+<body class="bg-slate-50 text-slate-900">
 
-<nav class="h-20 border-b flex items-center sticky top-0 bg-white/90 backdrop-blur z-50">
-    <div class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
+<header class="bg-white/90 backdrop-blur border-b sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
         <a href="index.php" class="flex items-center gap-2">
-            <img src="lecduit-logo.jpg" class="h-8 md:h-10"><span class="font-extrabold text-xl uppercase">Lecduit<span class="text-lec-teal">.<?php echo $market_id; ?></span></span>
+            <img src="lecduit-logo.png" class="h-8 md:h-10">
+            <span class="font-extrabold text-xl uppercase">Lecduit<span class="text-lec-teal">.<?php echo $market_id; ?></span></span>
         </a>
         <div class="flex items-center gap-4">
-            <div class="hidden md:flex gap-2 text-[10px] font-bold uppercase">
-                <?php foreach(['sk', 'cz', 'pl', 'en', 'de'] as $l): ?>
-                    <a href="?id=<?php echo $id; ?>&lang=<?php echo $l; ?>" class="<?php echo $lang == $l ? 'text-lec-teal' : 'text-slate-300'; ?> transition"><?php echo $l; ?></a>
-                <?php endforeach; ?>
-            </div>
-            <a href="index.php" class="text-xs font-extrabold uppercase text-slate-400">← <?php echo $t['back']; ?></a>
+            <a href="index.php" class="text-xs font-bold uppercase text-slate-400 hover:text-lec-teal transition">
+                <i class="fa fa-arrow-left mr-1"></i> <?php echo $t['back']; ?>
+            </a>
+            <a href="checkout.php" class="relative p-2 bg-slate-100 rounded-full group transition">
+                <i class="fa fa-shopping-basket text-slate-400 group-hover:text-lec-teal"></i>
+                <?php if($cart->getCount() > 0): ?>
+                    <span class="absolute -top-1 -right-1 bg-lec-orange text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full"><?php echo $cart->getCount(); ?></span>
+                <?php endif; ?>
+            </a>
         </div>
     </div>
-</nav>
+</header>
 
-<main class="max-w-7xl mx-auto px-4 py-12">
-    <?php if(isset($_GET['added'])): ?>
-        <div id="notif" class="max-w-3xl mx-auto bg-green-500 text-white p-4 rounded-2xl mb-8 flex items-center justify-between shadow-lg transition-all duration-500">
-            <span class="font-bold text-sm"><i class="fa fa-check-circle mr-2"></i> <?php echo $t['added']; ?></span>
-            <a href="checkout.php" class="text-[10px] bg-white text-green-600 px-4 py-2 rounded-xl font-black uppercase"><?php echo $t['view_cart']; ?></a>
+<main class="max-w-6xl mx-auto px-4 py-8">
+
+    <?php if (isset($_GET['added'])): ?>
+        <div class="mb-6 p-4 bg-green-500 text-white rounded-2xl font-bold text-center animate-bounce shadow-lg shadow-green-200">
+            <i class="fa fa-check-circle mr-2"></i> <?php echo $t['added']; ?>
+            <a href="checkout.php" class="underline ml-4 uppercase text-xs"><?php echo $t['view_cart']; ?> →</a>
         </div>
-        <script>setTimeout(() => { document.getElementById('notif').style.opacity = '0'; setTimeout(() => document.getElementById('notif').remove(), 500); }, 5000);</script>
     <?php endif; ?>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        <div class="space-y-12">
-            <img src="<?php echo h($p['image_url']); ?>" class="w-full rounded-[3rem] shadow-2xl">
-            <div>
-                <h2 class="text-2xl font-black mb-6 italic border-l-4 border-lec-teal pl-4 uppercase"><?php echo $t['desc']; ?></h2>
-                <p class="text-slate-500 leading-relaxed text-lg"><?php echo nl2br(h($p['desc'.$suffix])); ?></p>
+    <div class="flex flex-col md:flex-row gap-10">
+
+        <div class="w-full md:w-1/2">
+            <div class="sticky top-28">
+                <div class="aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-2xl">
+                    <img src="<?php echo h($p['image_url']); ?>" class="w-full h-full object-cover" alt="<?php echo h($p['title'.$suffix]); ?>">
+                </div>
+
+                <div class="mt-6 flex flex-wrap gap-2">
+                    <?php foreach ($productTags as $tag): ?>
+                        <span class="bg-white border border-slate-100 px-4 py-2 rounded-full text-[10px] font-bold uppercase text-slate-500 shadow-sm">
+                            <i class="fa <?php echo h($tag['icon']); ?> text-lec-teal mr-2"></i> <?php echo h($tag['name'.$suffix]); ?>
+                        </span>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 
-        <div class="lg:sticky lg:top-32 bg-slate-50 p-10 rounded-[3rem] border border-slate-100 shadow-xl">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="text-slate-400 text-[10px] font-bold uppercase tracking-widest"><?php echo h($p['cat_name']); ?></span>
-                <i class="fa fa-chevron-right text-[10px] text-slate-200"></i>
-                <span class="text-lec-teal text-[10px] font-black uppercase tracking-widest"><?php echo h($p['sub_name']); ?></span>
+        <div class="w-full md:w-1/2 flex flex-col">
+            <nav class="flex items-center gap-2 text-[10px] font-bold uppercase text-slate-400 mb-4">
+                <span><?php echo h($p['cat_name']); ?></span>
+                <i class="fa fa-chevron-right text-[8px]"></i>
+                <span class="text-lec-teal"><?php echo h($p['sub_name']); ?></span>
+            </nav>
+
+            <h1 class="text-3xl md:text-4xl font-black leading-tight mb-6">
+                <?php echo h($p['title'.$suffix]); ?>
+            </h1>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 bg-lec-teal/10 rounded-xl flex items-center justify-center text-lec-teal">
+                        <i class="fa fa-calendar-check text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">Dostupnosť</p>
+                        <p class="text-xs font-black"><?php echo $t['validity']; ?></p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 bg-lec-orange/10 rounded-xl flex items-center justify-center text-lec-orange">
+                        <i class="fa fa-bolt text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">Doručenie</p>
+                        <p class="text-xs font-black"><?php echo $t['delivery']; ?></p>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-4xl font-black mb-8 leading-tight"><?php echo h($p['title'.$suffix]); ?></h1>
 
-            <div class="space-y-4 mb-10 border-t py-8 border-slate-200">
-                <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-clock text-green-500 w-5 text-center"></i> <?php echo $p['duration_minutes']; ?> min.</div>
-                <?php foreach($productTags as $tag): ?>
-                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa <?php echo h($tag['icon']); ?> text-lec-teal w-5 text-center"></i> <?php echo h($tag['name'.$suffix]); ?></div>
-                <?php endforeach; ?>
+            <div class="prose prose-slate mb-10">
+                <h3 class="text-[10px] font-bold uppercase text-slate-400 mb-3 tracking-widest"><?php echo $t['desc']; ?></h3>
+                <p class="text-slate-600 leading-relaxed font-medium">
+                    <?php echo nl2br(h($p['description'.$suffix])); ?>
+                </p>
             </div>
 
-            <?php if ($p['is_bookable']): ?>
-                <div class="space-y-4 mb-10">
-                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-check text-green-500 w-5 text-center"></i> <?php echo $t['validity']; ?></div>
-                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-envelope text-green-500 w-5 text-center"></i> <?php echo $t['delivery']; ?></div>
-                </div>
+            <div class="mt-auto bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-lec-teal/5 rounded-full -mr-16 -mt-16"></div>
 
-                <div class="mb-10">
-                    <span class="text-[10px] font-black text-slate-400 uppercase italic block mb-1"><?php echo $t['price_for']; ?></span>
-                    <div class="text-5xl font-black text-lec-dark italic"><?php echo formatPrice($p[$price_col]); ?></div>
-                </div>
-
-                <form method="POST">
-                    <button type="submit" name="add_to_cart" class="w-full bg-lec-orange text-white py-6 rounded-3xl font-black text-xl shadow-xl hover:scale-[1.02] transition-all uppercase">
-                        <i class="fa fa-shopping-basket mr-2"></i> <?php echo $t['buy']; ?>
-                    </button>
-                </form>
-                <p class="text-center text-[10px] font-bold text-slate-400 mt-4 uppercase"><i class="fa fa-lock mr-1"></i> <?php echo $t['secure']; ?></p>
-
-            <?php else: ?>
-                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
-                    <h3 class="text-sm font-black uppercase italic text-slate-400 border-b pb-4"><?php echo $t['contact']; ?></h3>
-
-                    <?php if ($p['contact_phone']): ?>
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase"><?php echo $t['phone']; ?></span>
-                            <a href="tel:<?php echo h($p['contact_phone']); ?>" class="text-lg font-black text-lec-dark hover:text-lec-teal transition"><?php echo h($p['contact_phone']); ?></a>
+                <?php if ($p['can_buy_voucher']): ?>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1"><?php echo $t['price_for']; ?></span>
+                            <span class="text-4xl font-black text-lec-dark"><?php echo formatPrice($p[$price_col]); ?></span>
                         </div>
-                    <?php endif; ?>
-
-                    <?php if ($p['contact_email']): ?>
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase"><?php echo $t['email']; ?></span>
-                            <a href="mailto:<?php echo h($p['contact_email']); ?>" class="text-sm font-bold text-slate-600 hover:text-lec-teal transition underline"><?php echo h($p['contact_email']); ?></a>
+                        <form method="POST" class="w-full sm:w-auto">
+                            <button type="submit" name="add_to_cart" class="w-full sm:px-10 py-5 bg-lec-orange text-white rounded-2xl font-black text-sm uppercase hover:scale-105 active:scale-95 transition-all shadow-lg shadow-lec-orange/20">
+                                <i class="fa fa-shopping-cart mr-2"></i> <?php echo $t['buy']; ?>
+                            </button>
+                        </form>
+                    </div>
+                    <p class="mt-4 text-[10px] font-bold text-slate-400 text-center uppercase">
+                        <i class="fa fa-lock mr-1"></i> <?php echo $t['secure']; ?>
+                    </p>
+                <?php else: ?>
+                    <div class="space-y-4 relative z-10">
+                        <h4 class="font-black text-lg uppercase italic"><?php echo $t['contact']; ?></h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <?php if ($p['contact_phone']): ?>
+                                <a href="tel:<?php echo h($p['contact_phone']); ?>" class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-lec-teal transition group">
+                                    <i class="fa fa-phone text-lec-teal"></i>
+                                    <span class="text-xs font-bold text-slate-600"><?php echo h($p['contact_phone']); ?></span>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($p['contact_email']): ?>
+                                <a href="mailto:<?php echo h($p['contact_email']); ?>" class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-lec-teal transition group">
+                                    <i class="fa fa-envelope text-lec-teal"></i>
+                                    <span class="text-xs font-bold text-slate-600 truncate"><?php echo h($p['contact_email']); ?></span>
+                                </a>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
-
-                    <?php if ($p['contact_website']): ?>
-                        <a href="<?php echo h($p['contact_website']); ?>" target="_blank" class="block w-full text-center bg-lec-dark text-white py-4 rounded-2xl font-black text-xs uppercase hover:bg-lec-teal transition shadow-lg">
-                            <i class="fa fa-external-link mr-2"></i> <?php echo $t['visit_web']; ?>
-                        </a>
-                    <?php endif; ?>
-                </div>
-                <div class="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-start gap-3">
-                    <i class="fa fa-info-circle text-blue-500 mt-1"></i>
-                    <p class="text-[11px] font-bold text-blue-700 leading-tight">Toto miesto zatiaľ nepodporuje priamy nákup voucherov. Pre rezerváciu prosím kontaktujte poskytovateľa priamo.</p>
-                </div>
-            <?php endif; ?>
-
+                        <?php if ($p['contact_website']): ?>
+                            <a href="<?php echo h($p['contact_website']); ?>" target="_blank" class="block w-full text-center bg-lec-dark text-white py-4 rounded-xl font-bold text-xs uppercase hover:bg-lec-teal transition">
+                                <i class="fa fa-external-link mr-2"></i> <?php echo $t['visit_web']; ?>
+                            </a>
+                        <?php endif; ?>
+                        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100 flex items-start gap-2">
+                            <i class="fa fa-info-circle text-blue-500 text-xs mt-0.5"></i>
+                            <p class="text-[10px] font-bold text-blue-700 leading-tight">
+                                <?php echo ($lang == 'sk' ? 'Priamy nákup nie je k dispozícii. Kontaktujte poskytovateľa.' : 'Přímý nákup není k dispozici. Kontaktujte poskytovatele.'); ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </main>
+
+<footer class="mt-20 py-10 border-t bg-white">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-[10px] font-bold uppercase text-slate-300 tracking-widest">© 2026 Lecduit. All rights reserved.</p>
+    </div>
+</footer>
+
 </body>
 </html>
