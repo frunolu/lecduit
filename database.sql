@@ -205,3 +205,18 @@ INSERT INTO `tags` (`id`, `code`, `icon`, `name_sk`, `name_cz`, `name_pl`, `name
 (5,	'outdoor',	'fa-sun',	'Exteriér (Vonku)',	'Exteriér (Venku)',	'Na zewnątrz',	'Outdoor',	'Außenbereich');
 
 -- 2026-02-06 10:40:27 UTC
+
+CREATE TABLE `users` (
+                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                         `email` varchar(100) NOT NULL,
+                         `first_name` varchar(50) DEFAULT NULL,
+                         `last_name` varchar(50) DEFAULT NULL,
+                         `google_id` varchar(100) DEFAULT NULL,
+                         `apple_id` varchar(100) DEFAULT NULL,
+                         `avatar` varchar(255) DEFAULT NULL,
+                         `created_at` timestamp NULL DEFAULT current_timestamp(),
+                         `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                         PRIMARY KEY (`id`),
+                         UNIQUE KEY `email` (`email`),
+                         UNIQUE KEY `google_id` (`google_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

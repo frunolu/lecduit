@@ -2,8 +2,11 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ExperienceRepository.php';
 require_once __DIR__ . '/Cart.php';
+require_once __DIR__ . '/User.php'; // Nové
 
 $cart = new Cart();
+$user = new User(); // Nové
+$currentUser = $user->getCurrentUser(); // Nové
 $repo = new ExperienceRepository($lang, $price_col);
 
 $id = $_GET['id'] ?? null;
@@ -36,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo h($p['title'.$suffix]); ?> | Lecduit</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -61,6 +64,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
             <a href="index.php" class="text-xs font-bold uppercase text-slate-400 hover:text-lec-teal transition">
                 <i class="fa fa-arrow-left mr-1"></i> <?php echo $t['back']; ?>
             </a>
+
+            <?php if ($currentUser): ?>
+                <div class="flex items-center gap-2 ml-2 pl-4 border-l border-slate-100">
+                    <?php if(!empty($currentUser['avatar'])): ?>
+                        <img src="<?php echo h($currentUser['avatar']); ?>" class="w-8 h-8 rounded-full border border-slate-200">
+                    <?php else: ?>
+                        <div class="w-8 h-8 rounded-full bg-lec-teal text-white flex items-center justify-center font-bold">
+                            <?php echo substr($currentUser['first_name'], 0, 1); ?>
+                        </div>
+                    <?php endif; ?>
+                    <span class="hidden md:inline text-xs font-bold"><?php echo h($currentUser['first_name']); ?></span>
+                    <a href="logout.php" class="text-xs text-slate-400 hover:text-red-500 ml-1" title="Odhlásit"><i class="fa fa-sign-out"></i></a>
+                </div>
+            <?php else: ?>
+                <a href="login_google.php" class="ml-2 pl-4 border-l border-slate-100 text-xs font-bold uppercase text-slate-500 hover:text-lec-teal flex items-center gap-1">
+                    <i class="fa-brands fa-google"></i> <span class="hidden sm:inline">Login</span>
+                </a>
+            <?php endif; ?>
+
             <a href="checkout.php" class="relative p-2 bg-slate-100 rounded-2xl group transition">
                 <i class="fa fa-shopping-basket text-slate-400 group-hover:text-lec-teal"></i>
                 <?php if($cart->getCount() > 0): ?>

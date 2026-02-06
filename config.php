@@ -32,6 +32,12 @@ if (isset($_GET['lang'])) {
 }
 $lang = $_SESSION['lang'] ?? $market['def_lang'];
 
+// --- 4. NASTAVENÍ OAUTH (GOOGLE) ---
+// Tyto hodnoty nahraď těmi, které získáš v Google Console
+define('GOOGLE_CLIENT_ID', 'TVOJE_GOOGLE_CLIENT_ID');
+define('GOOGLE_CLIENT_SECRET', 'TVOJE_GOOGLE_CLIENT_SECRET');
+define('GOOGLE_REDIRECT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/login_google.php');
+
 // --- 3. KOMPLETNÍ PŘEKLADOVÝ SLOVNÍK ---
 $txt = [
     'sk' => [
