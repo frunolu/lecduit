@@ -22,7 +22,6 @@ $products = $repo->search($filters);
 $categories = $pdo->query("SELECT * FROM categories ORDER BY id")->fetchAll();
 
 $resetUrl = 'index.php?lang=' . urlencode($lang);
-
 $qsAllCat = $_GET;
 unset($qsAllCat['cat']);
 $allCatUrl = 'index.php' . (!empty($qsAllCat) ? ('?' . http_build_query($qsAllCat)) : '');
@@ -47,130 +46,130 @@ $hasCatFilter = !empty($filters['cat']);
             }
         }
     </script>
-    <style>
-        /* Plynulý prechod pre mobilné menu */
-        #filterPanel.hidden { display: none; }
-        @media (max-width: 767px) {
-            #filterPanel:not(.hidden) { display: flex; flex-direction: column; }
-        }
-    </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 text-slate-900 font-sans">
 
 <header class="bg-white/90 backdrop-blur border-b sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
         <a href="index.php" class="flex items-center gap-2">
             <img src="lecduit-logo.png" class="h-8 md:h-10">
-            <span class="font-extrabold text-xl uppercase">Lecduit<span class="text-lec-teal">.<?php echo $market_id; ?></span></span>
+            <span class="font-extrabold text-xl uppercase tracking-tighter">Lecduit<span class="text-lec-teal">.<?php echo $market_id; ?></span></span>
         </a>
         <div class="flex items-center gap-4">
-            <div class="hidden md:flex gap-3 text-[10px] font-bold uppercase">
+            <div class="hidden sm:flex gap-3 text-[10px] font-bold uppercase">
                 <?php foreach(['sk', 'cz', 'pl', 'en', 'de'] as $l): ?>
-                    <a href="?lang=<?php echo $l; ?>" class="<?php echo $lang == $l ? 'text-lec-teal border-b-2 border-lec-teal' : 'text-slate-300'; ?> transition"><?php echo $l; ?></a>
+                    <a href="?lang=<?php echo $l; ?>" class="<?php echo $lang == $l ? 'text-lec-teal border-b-2 border-lec-teal' : 'text-slate-300'; ?> transition px-1"><?php echo $l; ?></a>
                 <?php endforeach; ?>
             </div>
-            <a href="checkout.php" class="relative p-2 bg-slate-100 rounded-full group transition">
+            <a href="checkout.php" class="relative p-3 bg-slate-100 rounded-2xl group transition hover:bg-lec-teal/10">
                 <i class="fa fa-shopping-basket text-slate-400 group-hover:text-lec-teal"></i>
                 <?php if($cart->getCount() > 0): ?>
-                    <span class="absolute -top-1 -right-1 bg-lec-orange text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full"><?php echo $cart->getCount(); ?></span>
+                    <span class="absolute -top-1 -right-1 bg-lec-orange text-white text-[10px] font-black min-w-[20px] h-5 flex items-center justify-center rounded-full px-1 shadow-lg shadow-lec-orange/30"><?php echo $cart->getCount(); ?></span>
                 <?php endif; ?>
             </a>
         </div>
     </div>
 </header>
 
-<div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-    <aside class="w-full md:w-64">
+<div class="max-w-7xl mx-auto px-4 py-6 md:py-10 flex flex-col md:flex-row gap-8">
+
+    <aside class="w-full md:w-72 shrink-0">
         <div class="md:hidden mb-4">
-            <button type="button" id="filterToggle" class="w-full bg-white border border-slate-200 shadow-sm rounded-2xl px-4 py-4 font-extrabold text-xs uppercase text-slate-700 flex items-center justify-between">
-                <span><?php echo $t['filter_btn']; ?></span>
-                <i class="fa fa-sliders text-slate-400"></i>
+            <button type="button" id="filterToggle" class="w-full bg-white border-2 border-slate-100 shadow-sm rounded-2xl px-5 py-4 font-black text-sm uppercase text-slate-700 flex items-center justify-between">
+                <span><i class="fa fa-sliders mr-2 text-lec-teal"></i> <?php echo $t['filter_btn']; ?></span>
+                <span class="bg-slate-100 px-2 py-1 rounded-lg text-[10px]"><?php echo count(array_filter($filters)); ?></span>
             </button>
         </div>
 
-        <div id="filterPanel" class="hidden md:block fixed md:relative inset-0 md:inset-auto z-[60] md:z-0 bg-white md:bg-transparent overflow-hidden">
-            <form action="index.php" method="GET" id="filterForm" class="flex flex-col h-full md:h-auto bg-white p-6 md:rounded-3xl border-0 md:border border-slate-100 shadow-none md:shadow-sm md:sticky md:top-24">
+        <div id="filterPanel" class="fixed inset-0 z-[100] hidden md:block md:relative md:z-0 bg-slate-900/40 backdrop-blur-sm md:bg-transparent">
+            <div class="absolute inset-y-0 left-0 w-full max-w-[320px] md:max-w-full bg-white md:bg-transparent h-full md:h-auto flex flex-col shadow-2xl md:shadow-none">
 
-                <div class="flex md:hidden justify-between items-center mb-6">
-                    <h2 class="text-xl font-black uppercase italic"><?php echo $t['filter_btn']; ?></h2>
-                    <button type="button" id="filterClose" class="text-slate-400 text-3xl">&times;</button>
-                </div>
+                <form action="index.php" method="GET" id="filterForm" class="flex flex-col h-full bg-white p-6 md:rounded-[2.5rem] md:border md:border-slate-100 md:sticky md:top-24">
 
-                <div class="flex-1 overflow-y-auto pr-2 md:overflow-visible">
-                    <input type="hidden" name="lat" id="lat-input" value="<?php echo h($filters['lat']); ?>">
-                    <input type="hidden" name="lng" id="lng-input" value="<?php echo h($filters['lng']); ?>">
-                    <input type="hidden" name="lang" value="<?php echo h($lang); ?>">
-
-                    <div class="mb-6">
-                        <label class="text-[10px] font-bold uppercase text-slate-400 mb-3 block"><?php echo $t['location']; ?></label>
-                        <button type="button" id="locate-btn" class="w-full mb-4 py-3 rounded-xl border-2 border-dashed <?php echo $filters['lat'] ? 'border-green-500 text-green-600 bg-green-50' : 'border-lec-teal text-lec-teal'; ?> font-bold text-xs uppercase">
-                            <?php echo $filters['lat'] ? 'GPS OK' : 'V okolí'; ?>
-                        </button>
-                        <?php if($filters['lat']): ?>
-                            <input type="range" name="radius" min="5" max="500" step="10" value="<?php echo $filters['radius']; ?>" class="w-full h-2 accent-lec-teal" oninput="document.getElementById('rv').innerText = this.value">
-                            <div class="text-[10px] font-bold mt-2 text-slate-400"><?php echo $t['radius']; ?>: <span id="rv"><?php echo $filters['radius']; ?></span> km</div>
-                        <?php endif; ?>
+                    <div class="flex md:hidden justify-between items-center mb-6">
+                        <h2 class="text-xl font-black uppercase italic tracking-tighter"><?php echo $t['filter_btn']; ?></h2>
+                        <button type="button" id="filterClose" class="w-10 h-10 bg-slate-100 rounded-xl text-slate-400"><i class="fa fa-times"></i></button>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="text-[10px] font-bold uppercase text-slate-400 mb-3 block"><?php echo $t['country']; ?></label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <?php foreach(['sk'=>'🇸🇰 SK','cz'=>'🇨🇿 CZ','pl'=>'🇵🇱 PL'] as $c=>$n): ?>
-                                <label class="flex items-center gap-2 mb-1">
-                                    <input type="checkbox" name="countries[]" value="<?php echo $c; ?>" <?php echo in_array($c, $filters['countries']) ? 'checked' : ''; ?> class="rounded text-lec-teal">
-                                    <span class="text-xs font-bold text-slate-600"><?php echo $n; ?></span>
-                                </label>
-                            <?php endforeach; ?>
+                    <div class="flex-1 overflow-y-auto pr-2 md:overflow-visible">
+                        <input type="hidden" name="lat" id="lat-input" value="<?php echo h($filters['lat']); ?>">
+                        <input type="hidden" name="lng" id="lng-input" value="<?php echo h($filters['lng']); ?>">
+                        <input type="hidden" name="lang" value="<?php echo h($lang); ?>">
+
+                        <div class="mb-6">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-3 block"><?php echo $t['location']; ?></label>
+                            <button type="button" id="locate-btn" class="w-full py-3 rounded-xl border-2 border-dashed <?php echo $filters['lat'] ? 'border-green-500 text-green-600 bg-green-50' : 'border-lec-teal/30 text-lec-teal'; ?> font-bold text-xs uppercase mb-3">
+                                <i class="fa fa-location-crosshairs mr-2"></i> <?php echo $filters['lat'] ? 'GPS AKTÍVNE' : 'V okolí (GPS)'; ?>
+                            </button>
+
+                            <?php if($filters['lat']): ?>
+                                <div class="px-1">
+                                    <input type="range" name="radius" min="5" max="500" step="5" value="<?php echo $filters['radius']; ?>"
+                                           class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-lec-teal"
+                                           oninput="document.getElementById('rv').innerText = this.value">
+                                    <div class="flex justify-between text-[10px] font-bold mt-2 text-slate-400 uppercase">
+                                        <span><?php echo $t['radius']; ?></span>
+                                        <span class="text-lec-teal font-black"><span id="rv"><?php echo $filters['radius']; ?></span> km</span>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-6 border-t pt-6 border-slate-50">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-3 block"><?php echo $t['country']; ?></label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <?php foreach(['sk'=>'🇸🇰 SK','cz'=>'🇨🇿 CZ','pl'=>'🇵🇱 PL'] as $c=>$n): ?>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-50 hover:bg-slate-50 cursor-pointer">
+                                        <input type="checkbox" name="countries[]" value="<?php echo $c; ?>" <?php echo in_array($c, $filters['countries']) ? 'checked' : ''; ?> class="w-4 h-4 rounded text-lec-teal border-slate-200">
+                                        <span class="text-[11px] font-bold text-slate-600"><?php echo $n; ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="mb-6 border-t pt-6 border-slate-50">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-3 block">Vlastnosti</label>
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <?php foreach($allTags as $tag): ?>
+                                    <label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer group">
+                                        <input type="checkbox" name="tags[]" value="<?php echo h($tag['code']); ?>" <?php echo in_array($tag['code'], (array)$filters['tags']) ? 'checked' : ''; ?> class="w-3.5 h-3.5 rounded text-lec-teal border-slate-200">
+                                        <span class="text-[10px] font-bold text-slate-500 group-hover:text-lec-teal leading-tight">
+                                            <?php echo h($tag['name'.$suffix]); ?>
+                                        </span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="mb-6 border-t pt-6 border-slate-50">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-3 block">Cena (<?php echo $currency; ?>)</label>
+                            <div class="flex gap-2">
+                                <input type="number" name="min_price" placeholder="Od" value="<?php echo h($filters['min_price']); ?>" class="w-full bg-slate-50 border-0 rounded-xl px-3 py-2 text-xs font-black outline-none focus:ring-1 focus:ring-lec-teal">
+                                <input type="number" name="max_price" placeholder="Do" value="<?php echo h($filters['max_price']); ?>" class="w-full bg-slate-50 border-0 rounded-xl px-3 py-2 text-xs font-black outline-none focus:ring-1 focus:ring-lec-teal">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-6 border-t pt-6 border-slate-50">
-                        <label class="text-[10px] font-bold uppercase text-slate-400 mb-3 block">Vlastnosti</label>
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-1">
-                            <?php foreach($allTags as $tag): ?>
-                                <label class="flex items-center gap-2 mb-2 group cursor-pointer">
-                                    <input type="checkbox" name="tags[]" value="<?php echo h($tag['code']); ?>" <?php echo in_array($tag['code'], (array)$filters['tags']) ? 'checked' : ''; ?> class="rounded text-lec-teal">
-                                    <span class="text-[10px] font-bold text-slate-600 group-hover:text-lec-teal transition leading-tight">
-                                        <i class="fa <?php echo h($tag['icon']); ?> w-3 text-center opacity-50"></i>
-                                        <?php echo h($tag['name'.$suffix]); ?>
-                                    </span>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
+                    <div class="pt-4 border-t border-slate-100 bg-white mt-auto flex gap-2">
+                        <a href="<?php echo $resetUrl; ?>" class="flex-1 py-3 rounded-xl font-black text-[10px] uppercase bg-slate-50 text-slate-400 text-center flex items-center justify-center border border-slate-100">Reset</a>
+                        <button type="submit" class="flex-[2] bg-lec-dark text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-lec-dark/10"><?php echo $t['filter_btn']; ?></button>
                     </div>
-
-                    <div class="mb-6 border-t pt-6 border-slate-50">
-                        <label class="text-[10px] font-bold uppercase text-slate-400 mb-3 block">Cena (<?php echo $currency; ?>)</label>
-                        <div class="flex gap-2">
-                            <input type="number" name="min_price" placeholder="Od" value="<?php echo h($filters['min_price']); ?>" class="w-1/2 bg-slate-50 border rounded-xl px-2 py-2 text-xs font-bold outline-none focus:border-lec-teal">
-                            <input type="number" name="max_price" placeholder="Do" value="<?php echo h($filters['max_price']); ?>" class="w-1/2 bg-slate-50 border rounded-xl px-2 py-2 text-xs font-bold outline-none focus:border-lec-teal">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-slate-100 bg-white mt-auto flex flex-col gap-2">
-                    <button type="submit" class="w-full bg-lec-dark text-white py-4 rounded-xl font-bold text-xs uppercase hover:bg-slate-800 transition">
-                        <?php echo $t['filter_btn']; ?>
-                    </button>
-                    <a href="<?php echo $resetUrl; ?>" class="w-full px-4 py-4 rounded-xl font-black text-xs uppercase border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white transition text-center">
-                        Reset
-                    </a>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </aside>
 
     <main class="flex-1">
-        <div class="flex flex-wrap gap-2 justify-center mb-8">
-            <a href="<?php echo h($allCatUrl); ?>" class="px-4 py-2 rounded-full border border-slate-200 text-[10px] font-bold uppercase <?php echo $hasCatFilter ? 'bg-white text-slate-500' : 'bg-lec-dark text-white'; ?>">
-                <i class="fa fa-border-all mr-1"></i> All
+        <div class="flex flex-wrap gap-2 mb-8 justify-start">
+            <a href="<?php echo h($allCatUrl); ?>" class="px-4 py-2.5 rounded-xl border-2 transition-all text-[10px] font-black uppercase flex items-center gap-2 <?php echo $hasCatFilter ? 'bg-white border-slate-100 text-slate-400' : 'bg-lec-dark border-lec-dark text-white'; ?>">
+                <i class="fa fa-border-all"></i> Všetko
             </a>
 
             <?php foreach($categories as $c): ?>
                 <label class="cursor-pointer">
                     <input type="checkbox" name="cat[]" value="<?php echo $c['slug']; ?>" form="filterForm" class="hidden peer" <?php echo in_array($c['slug'], (array)$filters['cat']) ? 'checked' : ''; ?> onchange="this.form.submit()">
-                    <div class="px-4 py-2 rounded-full border border-slate-200 text-[10px] font-bold uppercase peer-checked:bg-lec-dark peer-checked:text-white bg-white text-slate-500 transition">
-                        <i class="fa <?php echo $c['icon']; ?> mr-1"></i> <?php echo h($c['name'.$suffix]); ?>
+                    <div class="px-4 py-2.5 rounded-xl border-2 transition-all text-[10px] font-black uppercase flex items-center gap-2 peer-checked:bg-lec-dark peer-checked:border-lec-dark peer-checked:text-white bg-white border-slate-100 text-slate-400 hover:border-lec-teal/30">
+                        <i class="fa <?php echo h($c['icon']); ?>"></i> <?php echo h($c['name'.$suffix]); ?>
                     </div>
                 </label>
             <?php endforeach; ?>
@@ -178,17 +177,21 @@ $hasCatFilter = !empty($filters['cat']);
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($products as $p): ?>
-                <a href="detail.php?id=<?php echo $p['id']; ?>" class="group bg-white rounded-[2rem] p-3 border border-slate-100 shadow-sm hover:shadow-xl transition-all flex flex-col">
-                    <div class="h-48 overflow-hidden rounded-[1.5rem] relative mb-4">
-                        <img src="<?php echo $p['image_url']; ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <a href="detail.php?id=<?php echo $p['id']; ?>" class="group bg-white rounded-[2.5rem] p-4 border border-slate-100 shadow-sm hover:shadow-xl transition-all flex flex-col">
+                    <div class="aspect-[4/3] overflow-hidden rounded-[2rem] relative mb-4">
+                        <img src="<?php echo h($p['image_url']); ?>" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="Zážitek">
                         <?php if (isset($p['distance'])): ?>
-                            <div class="absolute bottom-3 left-3 bg-lec-dark/80 text-white px-2 py-1 rounded text-[9px] font-bold uppercase">📍 <?php echo round($p['distance'], 1); ?> km</div>
+                            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-black text-lec-dark">
+                                📍 <?php echo round($p['distance'], 1); ?> km
+                            </div>
                         <?php endif; ?>
                     </div>
-                    <h3 class="font-extrabold text-base mb-4 px-2 line-clamp-2"><?php echo h($p['title'.$suffix]); ?></h3>
-                    <div class="mt-auto flex justify-between items-center px-2 border-t pt-3">
-                        <span class="text-lg font-black text-lec-dark"><?php echo formatPrice($p[$price_col]); ?></span>
-                        <span class="text-[9px] font-bold text-slate-400 italic"><?php echo h($p['duration_minutes']); ?> m</span>
+                    <h3 class="font-black text-base mb-4 px-2 line-clamp-2 leading-tight"><?php echo h($p['title'.$suffix]); ?></h3>
+                    <div class="mt-auto flex justify-between items-end px-2 pb-2">
+                        <span class="text-xl font-black text-lec-dark tracking-tighter"><?php echo formatPrice($p[$price_col]); ?></span>
+                        <div class="bg-slate-50 px-3 py-1.5 rounded-lg text-[9px] font-black text-slate-400 uppercase">
+                            <?php echo h($p['duration_minutes']); ?> m
+                        </div>
                     </div>
                 </a>
             <?php endforeach; ?>
@@ -196,12 +199,29 @@ $hasCatFilter = !empty($filters['cat']);
     </main>
 </div>
 
-<script type="text/javascript">
-    (function () {
-        // GPS Geolocation
-        var locateBtn = document.getElementById('locate-btn');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterToggle = document.getElementById('filterToggle');
+        const filterClose = document.getElementById('filterClose');
+        const filterPanel = document.getElementById('filterPanel');
+        const locateBtn = document.getElementById('locate-btn');
+
+        if (filterToggle && filterPanel) {
+            filterToggle.addEventListener('click', () => {
+                filterPanel.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            });
+        }
+        if (filterClose && filterPanel) {
+            filterClose.addEventListener('click', () => {
+                filterPanel.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            });
+        }
+
         if (locateBtn) {
             locateBtn.addEventListener('click', function () {
+                locateBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>';
                 if (!navigator.geolocation) return;
                 navigator.geolocation.getCurrentPosition(function (pos) {
                     document.getElementById('lat-input').value = pos.coords.latitude;
@@ -210,26 +230,7 @@ $hasCatFilter = !empty($filters['cat']);
                 });
             });
         }
-
-        // Ovládanie mobilného filtra
-        var toggle = document.getElementById('filterToggle');
-        var close = document.getElementById('filterClose');
-        var panel = document.getElementById('filterPanel');
-
-        if (toggle && panel) {
-            toggle.addEventListener('click', function () {
-                panel.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Zákaz scrollovania pozadia
-            });
-        }
-
-        if (close && panel) {
-            close.addEventListener('click', function () {
-                panel.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            });
-        }
-    })();
+    });
 </script>
 </body>
 </html>
