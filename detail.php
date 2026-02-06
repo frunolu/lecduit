@@ -2,11 +2,11 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ExperienceRepository.php';
 require_once __DIR__ . '/Cart.php';
-require_once __DIR__ . '/User.php'; // Nové
+require_once __DIR__ . '/User.php';
 
 $cart = new Cart();
-$user = new User(); // Nové
-$currentUser = $user->getCurrentUser(); // Nové
+$user = new User();
+$currentUser = $user->getCurrentUser();
 $repo = new ExperienceRepository($lang, $price_col);
 
 $id = $_GET['id'] ?? null;
@@ -60,13 +60,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
             <img src="lecduit-logo.png" class="h-8 md:h-10">
             <span class="font-extrabold text-xl uppercase">Lecduit<span class="text-lec-teal">.<?php echo $market_id; ?></span></span>
         </a>
-        <div class="flex items-center gap-4">
-            <a href="index.php" class="text-xs font-bold uppercase text-slate-400 hover:text-lec-teal transition">
+        <div class="flex items-center gap-3">
+
+            <div class="relative">
+                <button onclick="document.getElementById('langDropdown').classList.toggle('hidden')" class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl text-[10px] font-bold uppercase text-slate-600 hover:text-lec-teal transition">
+                    <i class="fa fa-globe text-slate-400"></i>
+                    <span><?php echo $lang; ?></span>
+                    <i class="fa fa-chevron-down text-[8px] ml-1"></i>
+                </button>
+                <div id="langDropdown" class="hidden absolute top-full right-0 mt-2 bg-white border border-slate-100 rounded-xl shadow-xl py-2 min-w-[80px] flex flex-col z-50">
+                    <?php foreach(['sk', 'cz', 'pl', 'en', 'de'] as $l): ?>
+                        <a href="?id=<?php echo $id; ?>&lang=<?php echo $l; ?>" class="px-4 py-2 hover:bg-slate-50 text-[10px] font-bold uppercase flex justify-between items-center <?php echo $lang == $l ? 'text-lec-teal bg-slate-50' : 'text-slate-500'; ?>">
+                            <?php echo $l; ?>
+                            <?php if($lang == $l): ?><i class="fa fa-check text-[8px]"></i><?php endif; ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <a href="index.php" class="text-xs font-bold uppercase text-slate-400 hover:text-lec-teal transition hidden sm:inline-block ml-2">
                 <i class="fa fa-arrow-left mr-1"></i> <?php echo $t['back']; ?>
+            </a>
+            <a href="index.php" class="text-xs font-bold uppercase text-slate-400 hover:text-lec-teal transition sm:hidden ml-2">
+                <i class="fa fa-arrow-left"></i>
             </a>
 
             <?php if ($currentUser): ?>
-                <div class="flex items-center gap-2 ml-2 pl-4 border-l border-slate-100">
+                <div class="flex items-center gap-2 ml-1 pl-2 border-l border-slate-100">
                     <?php if(!empty($currentUser['avatar'])): ?>
                         <img src="<?php echo h($currentUser['avatar']); ?>" class="w-8 h-8 rounded-full border border-slate-200">
                     <?php else: ?>
@@ -74,16 +94,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                             <?php echo substr($currentUser['first_name'], 0, 1); ?>
                         </div>
                     <?php endif; ?>
-                    <span class="hidden md:inline text-xs font-bold"><?php echo h($currentUser['first_name']); ?></span>
-                    <a href="logout.php" class="text-xs text-slate-400 hover:text-red-500 ml-1" title="Odhlásit"><i class="fa fa-sign-out"></i></a>
+                    <a href="logout.php" class="text-xs text-slate-400 hover:text-red-500 ml-1 p-2" title="Odhlásit"><i class="fa fa-sign-out"></i></a>
                 </div>
             <?php else: ?>
-                <a href="login_google.php" class="ml-2 pl-4 border-l border-slate-100 text-xs font-bold uppercase text-slate-500 hover:text-lec-teal flex items-center gap-1">
+                <a href="login_google.php" class="ml-1 pl-2 border-l border-slate-100 text-xs font-bold uppercase text-slate-500 hover:text-lec-teal flex items-center gap-1 p-2">
                     <i class="fa-brands fa-google"></i> <span class="hidden sm:inline">Login</span>
                 </a>
             <?php endif; ?>
 
-            <a href="checkout.php" class="relative p-2 bg-slate-100 rounded-2xl group transition">
+            <a href="checkout.php" class="relative p-2 bg-slate-100 rounded-2xl group transition ml-1">
                 <i class="fa fa-shopping-basket text-slate-400 group-hover:text-lec-teal"></i>
                 <?php if($cart->getCount() > 0): ?>
                     <span class="absolute -top-1 -right-1 bg-lec-orange text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full"><?php echo $cart->getCount(); ?></span>
@@ -211,6 +230,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         </div>
     </div>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('langDropdown');
+            const button = dropdown.previousElementSibling;
+            if (!dropdown.contains(event.target) && !button.contains(event.target) && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
+</script>
 
 <footer class="mt-20 py-10 border-t bg-white">
     <div class="max-w-7xl mx-auto px-4 text-center">
