@@ -9,7 +9,7 @@ $repo = new ExperienceRepository($lang, $price_col);
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) { header("Location: index.php"); exit; }
 
-// Načtení detailu zážitku
+// Načtení detailu zážitku (přidali jsme nové sloupce do SELECTu díky p.*)
 $sql = "SELECT p.*, c.name$suffix as cat_name, s.name$suffix as sub_name 
         FROM experiences p 
         JOIN subcategories s ON p.subcategory_id = s.id 
@@ -21,7 +21,6 @@ $p = $stmt->fetch();
 
 if (!$p) die("Error: Zážitek nenalezen.");
 
-// NOVÉ: Načtení tagů (vlastností) pro tento zážitek
 $productTags = $repo->getTagsForExperience($id);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
@@ -74,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                 <p class="text-slate-500 leading-relaxed text-lg"><?php echo nl2br(h($p['desc'.$suffix])); ?></p>
             </div>
         </div>
+
         <div class="lg:sticky lg:top-32 bg-slate-50 p-10 rounded-[3rem] border border-slate-100 shadow-xl">
             <div class="flex items-center gap-2 mb-4">
                 <span class="text-slate-400 text-[10px] font-bold uppercase tracking-widest"><?php echo h($p['cat_name']); ?></span>
@@ -83,27 +83,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
             <h1 class="text-4xl font-black mb-8 leading-tight"><?php echo h($p['title'.$suffix]); ?></h1>
 
             <div class="space-y-4 mb-10 border-t py-8 border-slate-200">
-                <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-check text-green-500 w-5 text-center"></i> <?php echo $t['validity']; ?></div>
-                <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-envelope text-green-500 w-5 text-center"></i> <?php echo $t['delivery']; ?></div>
                 <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-clock text-green-500 w-5 text-center"></i> <?php echo $p['duration_minutes']; ?> min.</div>
-
                 <?php foreach($productTags as $tag): ?>
-                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm">
-                        <i class="fa <?php echo h($tag['icon']); ?> text-lec-teal w-5 text-center"></i>
-                        <?php echo h($tag['name'.$suffix]); ?>
-                    </div>
+                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa <?php echo h($tag['icon']); ?> text-lec-teal w-5 text-center"></i> <?php echo h($tag['name'.$suffix]); ?></div>
                 <?php endforeach; ?>
             </div>
 
-            <div class="mb-10">
-                <span class="text-[10px] font-black text-slate-400 uppercase italic block mb-1"><?php echo $t['price_for']; ?></span>
-                <div class="text-5xl font-black text-lec-dark italic"><?php echo formatPrice($p[$price_col]); ?></div>
-            </div>
-            <form method="POST">
-                <button type="submit" name="add_to_cart" class="w-full bg-lec-orange text-white py-6 rounded-3xl font-black text-xl shadow-xl hover:scale-[1.02] transition-all">
-                    <i class="fa fa-shopping-basket mr-2"></i> <?php echo $t['buy']; ?>
-                </button>
-            </form>
+            <?php if ($p['is_bookable']): ?>
+                <div class="space-y-4 mb-10">
+                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-check text-green-500 w-5 text-center"></i> <?php echo $t['validity']; ?></div>
+                    <div class="flex items-center gap-4 text-slate-600 font-bold text-sm"><i class="fa fa-envelope text-green-500 w-5 text-center"></i> <?php echo $t['delivery']; ?></div>
+                </div>
+
+                <div class="mb-10">
+                    <span class="text-[10px] font-black text-slate-400 uppercase italic block mb-1"><?php echo $t['price_for']; ?></span>
+                    <div class="text-5xl font-black text-lec-dark italic"><?php echo formatPrice($p[$price_col]); ?></div>
+                </div>
+
+                <form method="POST">
+                    <button type="submit" name="add_to_cart" class="w-full bg-lec-orange text-white py-6 rounded-3xl font-black text-xl shadow-xl hover:scale-[1.02] transition-all uppercase">
+                        <i class="fa fa-shopping-basket mr-2"></i> <?php echo $t['buy']; ?>
+                    </button>
+                </form>
+                <p class="text-center text-[10px] font-bold text-slate-400 mt-4 uppercase"><i class="fa fa-lock mr-1"></i> <?php echo $t['secure']; ?></p>
+
+            <?php else: ?>
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="text-sm font-black uppercase italic text-slate-400 border-b pb-4"><?php echo $t['contact']; ?></h3>
+
+                    <?php if ($p['contact_phone']): ?>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase"><?php echo $t['phone']; ?></span>
+                            <a href="tel:<?php echo h($p['contact_phone']); ?>" class="text-lg font-black text-lec-dark hover:text-lec-teal transition"><?php echo h($p['contact_phone']); ?></a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($p['contact_email']): ?>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase"><?php echo $t['email']; ?></span>
+                            <a href="mailto:<?php echo h($p['contact_email']); ?>" class="text-sm font-bold text-slate-600 hover:text-lec-teal transition underline"><?php echo h($p['contact_email']); ?></a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($p['contact_website']): ?>
+                        <a href="<?php echo h($p['contact_website']); ?>" target="_blank" class="block w-full text-center bg-lec-dark text-white py-4 rounded-2xl font-black text-xs uppercase hover:bg-lec-teal transition shadow-lg">
+                            <i class="fa fa-external-link mr-2"></i> <?php echo $t['visit_web']; ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <div class="mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-start gap-3">
+                    <i class="fa fa-info-circle text-blue-500 mt-1"></i>
+                    <p class="text-[11px] font-bold text-blue-700 leading-tight">Toto miesto zatiaľ nepodporuje priamy nákup voucherov. Pre rezerváciu prosím kontaktujte poskytovateľa priamo.</p>
+                </div>
+            <?php endif; ?>
+
         </div>
     </div>
 </main>

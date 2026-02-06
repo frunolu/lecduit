@@ -282,3 +282,9 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE,
   INDEX (`experience_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `experiences`
+ADD COLUMN `is_bookable` TINYINT(1) DEFAULT 1 AFTER `is_active`,
+ADD COLUMN `contact_phone` VARCHAR(50) NULL AFTER `is_bookable`,
+ADD COLUMN `contact_email` VARCHAR(100) NULL AFTER `contact_phone`,
+ADD COLUMN `contact_website` VARCHAR(255) NULL AFTER `contact_email`;
