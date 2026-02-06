@@ -1,290 +1,197 @@
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+-- Adminer 5.4.1 MariaDB 11.4.3-MariaDB-ubu2004 dump
 
--- 1. Kategorie
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `slug` varchar(50) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(50) NOT NULL,
   `icon` varchar(50) DEFAULT 'fa-star',
   `name_sk` varchar(100) NOT NULL,
   `name_cz` varchar(100) NOT NULL,
-  `name_pl` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `name_pl` varchar(100) NOT NULL,
+  `name_en` varchar(255) DEFAULT NULL,
+  `name_de` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 2. Podkategorie
+INSERT INTO `categories` (`id`, `slug`, `icon`, `name_sk`, `name_cz`, `name_pl`, `name_en`, `name_de`) VALUES
+(1,	'top-tipy',	'fa-star',	'⭐ TOP Tipy',	'⭐ TOP Tipy',	'⭐ TOP Tipy',	'⭐ TOP Tips',	'⭐ TOP-Tipps'),
+(2,	'voda-leto',	'fa-water',	'🌊 Voda & Leto',	'🌊 Voda & Léto',	'🌊 Woda i Lato',	'🌊 Water & Summer',	'🌊 Wasser & Sommer'),
+(3,	'relax-wellness',	'fa-spa',	'🧖‍♀️ Relax & Wellness',	'🧖‍♀️ Relax & Wellness',	'🧖‍♀️ Relaks i Wellness',	'🧖‍♀️ Relax & Wellness',	'🧖‍♀️ Entspannung & Wellness'),
+(4,	'priroda-vylety',	'fa-tree',	'🌲 Príroda & Výlety',	'🌲 Příroda & Výlety',	'🌲 Przyroda i Wycieczki',	'🌲 Nature & Trips',	'🌲 Natur & Ausflüge'),
+(5,	'ubytovanie',	'fa-home',	'🏡 Ubytovanie & Víkendy',	'🏡 Ubytování & Víkendy',	'🏡 Noclegi i Weekendy',	'🏡 Accommodation & Weekends',	'🏡 Unterkunft & Wochenenden'),
+(6,	'zazitky-adrenalin',	'fa-bolt',	'⚡ Zážitky & Adrenalín',	'⚡ Zážitky & Adrenalin',	'⚡ Wrażenia i Adrenalina',	'⚡ Experiences & Adrenaline',	'⚡ Erlebnisse & Adrenalin'),
+(7,	'rodina-deti',	'fa-child',	'👨‍👩‍👧‍👦 Rodina & Deti',	'👨‍👩‍👧‍👦 Rodina & Děti',	'👨‍👩‍👧‍👦 Rodzina i Dzieci',	'👨‍👩‍👧‍👦 Family & Kids',	'👨‍👩‍👧‍👦 Familie & Kinder'),
+(8,	'kultura-akcie',	'fa-theater-masks',	'🎭 Kultúra & Akcie',	'🎭 Kultura & Akce',	'🎭 Kultura i Wydarzenia',	'🎭 Culture & Events',	'🎭 Kultur & Veranstaltungen'),
+(9,	'zima-sneh',	'fa-snowflake',	'❄️ Zima & Sneh',	'❄️ Zima & Sníh',	'❄️ Zima i Śnieg',	'❄️ Winter & Snow',	'❄️ Winter & Schnee');
+
+DROP TABLE IF EXISTS `experiences`;
+CREATE TABLE `experiences` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subcategory_id` int(11) NOT NULL,
+  `title_sk` varchar(255) DEFAULT NULL,
+  `title_cz` varchar(255) DEFAULT NULL,
+  `title_pl` varchar(255) DEFAULT NULL,
+  `title_en` varchar(255) DEFAULT NULL,
+  `title_de` varchar(255) DEFAULT NULL,
+  `desc_sk` text DEFAULT NULL,
+  `desc_cz` text DEFAULT NULL,
+  `desc_pl` text DEFAULT NULL,
+  `desc_en` text DEFAULT NULL,
+  `desc_de` text DEFAULT NULL,
+  `price_sk` decimal(10,2) DEFAULT 0.00,
+  `price_cz` decimal(10,2) DEFAULT 0.00,
+  `price_pl` decimal(10,2) DEFAULT 0.00,
+  `lat` decimal(10,8) DEFAULT NULL,
+  `lng` decimal(11,8) DEFAULT NULL,
+  `country` varchar(2) DEFAULT NULL,
+  `difficulty` enum('easy','medium','hard') DEFAULT 'medium',
+  `duration_minutes` int(11) DEFAULT 60,
+  `image_url` varchar(255) DEFAULT 'default.jpg',
+  `is_active` tinyint(1) DEFAULT 1,
+  `is_bookable` tinyint(1) DEFAULT 1,
+  `contact_phone` varchar(50) DEFAULT NULL,
+  `contact_email` varchar(100) DEFAULT NULL,
+  `contact_website` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `subcategory_id` (`subcategory_id`),
+  CONSTRAINT `experiences_ibfk_1` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `experiences` (`id`, `subcategory_id`, `title_sk`, `title_cz`, `title_pl`, `title_en`, `title_de`, `desc_sk`, `desc_cz`, `desc_pl`, `desc_en`, `desc_de`, `price_sk`, `price_cz`, `price_pl`, `lat`, `lng`, `country`, `difficulty`, `duration_minutes`, `image_url`, `is_active`, `is_bookable`, `contact_phone`, `contact_email`, `contact_website`) VALUES
+(1,	3,	'Bungee z mostu Lafranconi',	'Bungee z mostu Lafranconi',	'Bungee jumping Lafranconi',	'Bungee Jump from Lafranconi Bridge',	'Bungee-Sprung von der Lafranconi-Brücke',	'Legendárny zoskok do kyvadla nad Dunajom.',	'Legendární seskok do kyvadla nad Dunajem.',	'Legendarny skok wahadłowy nad Dunajem.',	'Legendary pendulum jump over the Danube river.',	'Legendärer Pendelsprung über die Donau.',	50.00,	1250.00,	220.00,	48.14816300,	17.07246500,	'sk',	'hard',	45,	'https://images.unsplash.com/photo-1522069634954-469a4736f875?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(2,	6,	'Akčná streľba zo samopalu',	'Akční střelba ze samopalu',	'Strzelanie z pistoletu maszynowego',	'Action Shooting Experience',	'Action-Schießen mit Maschinenpistole',	'Vyskúšajte si silu AK-47 a ďalších legendárnych zbraní.',	'Vyzkoušejte si sílu AK-47 a dalších legendárních zbraní.',	'Spróbuj siły AK-47 i innych legendarnych broni.',	'Try the power of the AK-47 and other legendary weapons.',	'Probieren Sie die Kraft der AK-47 und anderer legendärer Waffen aus.',	80.00,	2000.00,	350.00,	48.19652000,	17.03458000,	'sk',	'medium',	90,	'https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(3,	1,	'Rafting na divokej vode',	'Rafting na divoké vodě',	'Rafting na dzikiej wodzie',	'Whitewater Rafting',	'Wildwasser-Rafting',	'Zíďte olympijský kanál s inštruktorom.',	'Sjeďte olympijský kanál s instruktorem.',	'Spłyń kanałem olimpijskim z instruktorem.',	'Ride down the Olympic channel with an instructor.',	'Fahren Sie den olympischen Kanal mit einem Instruktor hinunter.',	35.00,	890.00,	150.00,	48.03157200,	17.23094800,	'sk',	'hard',	120,	'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(4,	8,	'Víkendový Wellness v Tatrách',	'Víkendový Wellness v Tatrách',	'Weekend Wellness w Tatrach',	'Weekend Wellness in Tatras',	'Wellness-Wochenende in der Tatra',	'Luxusný hotel s výhľadom na štíty, sauna a bazén v cene.',	'Luxusní hotel s výhledem na štíty, sauna a bazén v ceně.',	'Luksusowy hotel s widokiem na szczyty, sauna i basen w cenie.',	'Luxury hotel with mountain views, sauna and pool included.',	'Luxushotel mit Bergblick, Sauna und Pool inklusive.',	250.00,	6200.00,	1100.00,	49.12053600,	20.06233400,	'sk',	'easy',	2880,	'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(5,	5,	'Thajská masáž chrbta',	'Thajská masáž zad',	'Tajski masaż pleców',	'Thai Back Massage',	'Thailändische Rückenmassage',	'Uvoľnite sa pod rukami skúsených terapeutiek.',	'Uvolněte se pod rukama zkušených terapeutek.',	'Zrelaksuj się pod okiem doświadczonych terapeutów.',	'Relax under the hands of experienced therapists.',	'Entspannen Sie sich unter den Händen erfahrener Therapeuten.',	45.00,	1100.00,	190.00,	48.14452000,	17.11245000,	'sk',	'easy',	60,	'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(7,	7,	'Jazda vo Ferrari 488',	'Jízda ve Ferrari 488',	'Jazda Ferrari 488',	'Ferrari 488 Driving',	'Ferrari 488 fahren',	'Splňte si sen a šoférujte taliansky supersport na diaľnici alebo okruhu.',	'Splňte si sen a řiďte italský supersport na dálnici nebo okruhu.',	'Spełnij marzenie i poprowadź włoski supersamochód.',	'Fulfil your dream and drive an Italian supercar.',	'Erfüllen Sie sich Ihren Traum und fahren Sie einen italienischen Supersportwagen.',	199.00,	4990.00,	890.00,	48.05456000,	17.56452000,	'sk',	'medium',	30,	'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(8,	7,	'Jazda v Tesla Model S Plaid',	'Jízda v Tesla Model S Plaid',	'Jazda Tesla Model S Plaid',	'Tesla Model S Plaid Drive',	'Fahrt im Tesla Model S Plaid',	'Zažite brutálne zrýchlenie elektromobilu.',	'Zažijte brutální zrychlení elektromobilu.',	'Przeżyj brutalne przyspieszenie samochodu elektrycznego.',	'Experience the brutal acceleration of an electric car.',	'Erleben Sie die brutale Beschleunigung eines Elektroautos.',	120.00,	3000.00,	550.00,	50.07553800,	14.43780000,	'cz',	'easy',	45,	'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=80',	1,	0,	'+421 900 123 456',	'info@tesla-experience.sk',	'https://www.tesla.com'),
+(9,	7,	'Offroad expedícia Hummer',	'Offroad expedice Hummer',	'Wyprawa off-road Hummer',	'Hummer Off-road Expedition',	'Offroad-Expedition Hummer',	'Blato, kopce a nezastaviteľný stroj.',	'Bláto, kopce a nezastavitelný stroj.',	'Błoto, wzgórza i niepowstrzymana maszyna.',	'Mud, hills and an unstoppable machine.',	'Schlamm, Hügel und eine unaufhaltsame Maschine.',	150.00,	3800.00,	680.00,	49.19506000,	16.60683700,	'cz',	'hard',	180,	'https://images.unsplash.com/photo-1533473359331-0135ef1bcfb0?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(10,	8,	'Degustácia vín na Morave',	'Degustace vín na Moravě',	'Degustacja win na Morawach',	'Wine Tasting in Moravia',	'Weinprobe in Mähren',	'Prehliadka pivnice s ochutnávkou 10 vzoriek.',	'Prohlídka sklípku s ochutnávkou 10 vzorků.',	'Zwiedzanie piwnicy z degustacją 10 próbek.',	'Cellar tour with tasting of 10 local wine samples.',	'Kellerbesichtigung mit Verkostung von 10 Weinproben.',	40.00,	990.00,	180.00,	48.80556000,	16.63789000,	'cz',	'easy',	120,	'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(11,	8,	'Kurz varenia sushi',	'Kurz vaření sushi',	'Kurs robienia sushi',	'Sushi Cooking Course',	'Sushi-Kochkurs',	'Naučte sa pripravovať dokonalé rolky od majstra šéfkuchára.',	'Naučte se připravovat dokonalé rolky od mistra šéfkuchaře.',	'Naucz się robić idealne sushi od mistrza kuchni.',	'Learn to prepare perfect sushi rolls from a master chef.',	'Lernen Sie, perfekte Sushi-Rollen von einem Meisterkoch zuzubereiten.',	90.00,	2200.00,	400.00,	50.06465000,	19.94498000,	'pl',	'medium',	180,	'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80',	1,	1,	NULL,	NULL,	NULL),
+(12,	2,	'Vyhliadková veža UFO',	'Vyhlídková věž UFO',	'Wieża widokowa UFO',	NULL,	NULL,	'Ikonická vyhliadka v Bratislave s panoramatickým výhľadom.',	NULL,	NULL,	NULL,	NULL,	0.00,	0.00,	0.00,	NULL,	NULL,	NULL,	'medium',	60,	'https://images.unsplash.com/photo-1562591970-254bc62245c0?auto=format&fit=crop&w=800&q=80',	1,	0,	'+421 2 6241 1307',	NULL,	'https://www.ufo.sk');
+
+DROP TABLE IF EXISTS `experience_tags`;
+CREATE TABLE `experience_tags` (
+  `experience_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`experience_id`,`tag_id`),
+  KEY `experience_tags_ibfk_2` (`tag_id`),
+  CONSTRAINT `experience_tags_ibfk_1` FOREIGN KEY (`experience_id`) REFERENCES `experiences` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `experience_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `experience_tags` (`experience_id`, `tag_id`) VALUES
+(3,	1),
+(9,	2),
+(2,	4),
+(4,	4),
+(5,	4),
+(10,	4),
+(11,	4),
+(1,	5),
+(3,	5),
+(7,	5),
+(8,	5),
+(9,	5);
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `market_id` varchar(2) NOT NULL,
+  `order_number` varchar(20) NOT NULL,
+  `status` enum('pending','paid','cancelled','refunded') DEFAULT 'pending',
+  `email` varchar(100) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `billing_street` varchar(255) DEFAULT NULL,
+  `billing_city` varchar(100) DEFAULT NULL,
+  `billing_zip` varchar(20) DEFAULT NULL,
+  `billing_country` char(2) DEFAULT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `currency` varchar(5) NOT NULL,
+  `tax_rate` decimal(5,2) NOT NULL,
+  `payment_method` varchar(50) DEFAULT 'card',
+  `payment_id` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_number` (`order_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `orders` (`id`, `market_id`, `order_number`, `status`, `email`, `first_name`, `last_name`, `phone`, `billing_street`, `billing_city`, `billing_zip`, `billing_country`, `total_amount`, `currency`, `tax_rate`, `payment_method`, `payment_id`, `created_at`, `updated_at`) VALUES
+(1,	'sk',	'202619798',	'pending',	'fruno.lu@gmail.com',	'Lukas',	'Fruno',	'+420606218592',	'Matlachova',	'Brno',	'62700',	'SK',	840.00,	'€',	20.00,	'card',	NULL,	'2026-02-05 22:18:44',	'2026-02-05 22:18:44');
+
+DROP TABLE IF EXISTS `order_items`;
+CREATE TABLE `order_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `experience_id` int(11) NOT NULL,
+  `title_snapshot` varchar(255) NOT NULL,
+  `price_unit` decimal(10,2) NOT NULL,
+  `qty` int(11) DEFAULT 1,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `order_items` (`id`, `order_id`, `experience_id`, `title_snapshot`, `price_unit`, `qty`) VALUES
+(1,	1,	10,	'Weinprobe in Mähren',	40.00,	9),
+(2,	1,	5,	'Thailändische Rückenmassage',	45.00,	2),
+(3,	1,	9,	'Offroad expedícia Hummer',	150.00,	2),
+(4,	1,	11,	'Sushi Cooking Course',	90.00,	1);
+
+DROP TABLE IF EXISTS `subcategories`;
 CREATE TABLE `subcategories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL,
   `slug` varchar(50) NOT NULL,
   `name_sk` varchar(100) DEFAULT NULL,
   `name_cz` varchar(100) DEFAULT NULL,
   `name_pl` varchar(100) DEFAULT NULL,
-  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `name_en` varchar(255) DEFAULT NULL,
+  `name_de` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `subcategories_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 3. Zážitky (Products) - Rozšířeno o ceny pro každou zemi a filtry
-CREATE TABLE `experiences` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `subcategory_id` int(11) NOT NULL,
-  `title_sk` varchar(255) DEFAULT NULL,
-  `title_cz` varchar(255) DEFAULT NULL,
-  `title_pl` varchar(255) DEFAULT NULL,
-  `desc_sk` TEXT DEFAULT NULL,
-  `desc_cz` TEXT DEFAULT NULL,
-  `desc_pl` TEXT DEFAULT NULL,
-  `price_sk` decimal(10,2) DEFAULT 0.00, -- Cena v EUR
-  `price_cz` decimal(10,2) DEFAULT 0.00, -- Cena v CZK
-  `price_pl` decimal(10,2) DEFAULT 0.00, -- Cena v PLN
-  `difficulty` ENUM('easy', 'medium', 'hard') DEFAULT 'medium',
-  `duration_minutes` INT DEFAULT 60,
-  `image_url` varchar(255) DEFAULT 'default.jpg',
-  `is_active` tinyint(1) DEFAULT 1,
-  FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories`(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `subcategories` (`id`, `category_id`, `slug`, `name_sk`, `name_cz`, `name_pl`, `name_en`, `name_de`) VALUES
+(1,	2,	'aquaparky',	'Aquaparky',	'Aquaparky',	'Aquaparki',	'Aquaparks',	'Wasserparks'),
+(2,	2,	'kupaliska',	'Kúpaliská',	'Koupaliště',	'Baseny',	'Swimming Pools',	'Freibäder'),
+(3,	6,	'bungee',	'Bungee jumping',	'Bungee jumping',	'Bungee jumping',	'Bungee jumping',	'Bungee-Jumping'),
+(4,	6,	'lety-balonom',	'Lety balónom',	'Lety balónem',	'Loty balonem',	'Balloon Flights',	'Ballonfahrten'),
+(5,	9,	'lyzovanie',	'Lyžovanie',	'Lyžování',	'Narciarstwo',	'Skiing',	'Skifahren'),
+(6,	6,	'strelba',	'Streľba',	'Střelba',	'Strzelanie',	'Shooting',	'Schießen'),
+(7,	6,	'auta',	'Rýchle autá',	'Rychlá auta',	'Szybkie auta',	'Fast cars',	'Schnelle Autos'),
+(8,	4,	'wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness',	'Wellness');
 
--- Vložení testovacích dat (Categories)
-INSERT INTO `categories` (`slug`, `icon`, `name_sk`, `name_cz`, `name_pl`) VALUES
-('adrenalin', 'fa-bolt', 'Adrenalín', 'Adrenalin', 'Adrenalina'),
-('relax', 'fa-spa', 'Relax', 'Relax', 'Relaks'),
-('auto-moto', 'fa-car', 'Auto-Moto', 'Auto-Moto', 'Moto');
-
--- Vložení testovacích dat (Subcategories)
-INSERT INTO `subcategories` (`category_id`, `slug`, `name_sk`, `name_cz`, `name_pl`) VALUES
-(1, 'skok', 'Bungee', 'Bungee', 'Bungee'),
-(2, 'wellness', 'Wellness', 'Wellness', 'Wellness');
-
--- Vložení testovacího zážitku
-INSERT INTO `experiences` (`subcategory_id`, `title_sk`, `title_cz`, `title_pl`, `desc_sk`, `price_sk`, `price_cz`, `price_pl`, `image_url`) VALUES
-(1, 'Bungee z mostu Lafranconi', 'Bungee z mostu Lafranconi', 'Bungee jumping Lafranconi', 'Super zážitok!', 50.00, 1250.00, 220.00, 'https://images.unsplash.com/photo-1522069634954-469a4736f875?auto=format&fit=crop&w=800&q=80');
-
-COMMIT;
-
-
--- 1. Nejprve vyčistíme stará data, ať se nám to neplete (volitelné, ale doporučené pro čistý start)
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE `experiences`;
-TRUNCATE TABLE `subcategories`;
-TRUNCATE TABLE `categories`;
-SET FOREIGN_KEY_CHECKS = 1;
-
--- 2. Vložíme Hlavní Kategorie
-INSERT INTO `categories` (`id`, `slug`, `icon`, `name_sk`, `name_cz`, `name_pl`) VALUES
-(1, 'adrenalin', 'fa-bolt', 'Adrenalín', 'Adrenalin', 'Adrenalina'),
-(2, 'relax', 'fa-spa', 'Relax a Krása', 'Relax a Krása', 'Relaks a Uroda'),
-(3, 'auto-moto', 'fa-car', 'Auto-Moto', 'Auto-Moto', 'Moto'),
-(4, 'gurman', 'fa-utensils', 'Gurmán', 'Gurmán', 'Smakosze');
-
--- 3. Vložíme Podkategorie
-INSERT INTO `subcategories` (`id`, `category_id`, `slug`, `name_sk`, `name_cz`, `name_pl`) VALUES
-(1, 1, 'bungee', 'Bungee zoskoky', 'Bungee seskoky', 'Bungee jumping'),
-(2, 1, 'strelba', 'Streľba', 'Střelba', 'Strzelanie'),
-(3, 1, 'voda', 'Vodné športy', 'Vodní sporty', 'Sporty wodne'),
-(4, 2, 'wellness', 'Wellness pobyty', 'Wellness pobyty', 'Wellness'),
-(5, 2, 'masaze', 'Masáže', 'Masáže', 'Masaże'),
-(6, 3, 'supersport', 'Jazda v superšporte', 'Jízda v supersportu', 'Jazda supersamochodem'),
-(7, 3, 'offroad', 'Offroad', 'Offroad', 'Off-road'),
-(8, 4, 'degustace', 'Degustácie', 'Degustace', 'Degustacja');
-
--- 4. Vložíme Zážitky (Experiences)
-INSERT INTO `experiences` (`subcategory_id`, `title_sk`, `title_cz`, `title_pl`, `desc_sk`, `price_sk`, `price_cz`, `price_pl`, `difficulty`, `duration_minutes`, `image_url`) VALUES
--- Adrenalin
-(1, 'Bungee z mostu Lafranconi', 'Bungee z mostu Lafranconi', 'Bungee jumping Lafranconi', 'Legendárny zoskok do kyvadla nad Dunajom.', 50.00, 1250.00, 220.00, 'hard', 60, 'https://images.unsplash.com/photo-1522069634954-469a4736f875?auto=format&fit=crop&w=800&q=80'),
-(2, 'Akčná streľba zo samopalu', 'Akční střelba ze samopalu', 'Strzelanie z pistoletu maszynowego', 'Vyzkoušejte si sílu AK-47 a dalších legendárních zbraní.', 80.00, 2000.00, 350.00, 'medium', 90, 'https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=800&q=80'),
-(3, 'Rafting na divokej vode', 'Rafting na divoké vodě', 'Rafting na dzikiej wodzie', 'Sjeďte olympijský kanál s instruktorem.', 35.00, 890.00, 150.00, 'hard', 120, 'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80'),
-
--- Relax
-(4, 'Víkendový Wellness v Tatrách', 'Víkendový Wellness v Tatrách', 'Weekend Wellness w Tatrach', 'Luxusní hotel s výhledem na štíty, sauna a bazén v ceně.', 250.00, 6200.00, 1100.00, 'easy', 2880, 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80'),
-(5, 'Thajská masáž chrbta', 'Thajská masáž zad', 'Tajski masaż pleców', 'Uvolněte se pod rukama zkušených terapeutek.', 45.00, 1100.00, 190.00, 'easy', 60, 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80'),
-(4, 'Privátna sauna pre dvoch', 'Privátní sauna pro dva', 'Prywatna sauna dla dwojga', 'Romantický relax v soukromí s lahví sektu.', 60.00, 1500.00, 260.00, 'easy', 90, 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80'),
-
--- Auto-Moto
-(6, 'Jazda vo Ferrari 488', 'Jízda ve Ferrari 488', 'Jazda Ferrari 488', 'Splňte si sen a řiďte italský supersport na dálnici nebo okruhu.', 199.00, 4990.00, 890.00, 'medium', 30, 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80'),
-(6, 'Jazda v Tesla Model S Plaid', 'Jízda v Tesla Model S Plaid', 'Jazda Tesla Model S Plaid', 'Zažijte brutální zrychlení elektromobilu.', 120.00, 3000.00, 550.00, 'easy', 45, 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=80'),
-(7, 'Offroad expedícia Hummer', 'Offroad expedice Hummer', 'Wyprawa off-road Hummer', 'Bláto, kopce a nezastavitelný stroj.', 150.00, 3800.00, 680.00, 'hard', 180, 'https://images.unsplash.com/photo-1533473359331-0135ef1bcfb0?auto=format&fit=crop&w=800&q=80'),
-
--- Gurmán
-(8, 'Degustácia vín na Morave', 'Degustace vín na Moravě', 'Degustacja win na Morawach', 'Prohlídka sklípku s ochutnávkou 10 vzorků.', 40.00, 990.00, 180.00, 'easy', 120, 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80'),
-(8, 'Kurz varenia sushi', 'Kurz vaření sushi', 'Kurs robienia sushi', 'Naučte se připravovat dokonalé rolky od mistra šéfkuchaře.', 90.00, 2200.00, 400.00, 'medium', 180, 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80');
-
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- 1. Přidání GPS souřadnic do tabulky experiences
-ALTER TABLE `experiences` 
-ADD COLUMN `lat` DECIMAL(10, 8) NULL AFTER `price_pl`,
-ADD COLUMN `lng` DECIMAL(11, 8) NULL AFTER `lat`;
-
--- 2. Systém pro praktické tagy (Filtry)
-CREATE TABLE IF NOT EXISTS `tags` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `code` varchar(50) NOT NULL UNIQUE, -- internal code (kids, dog, indoor)
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
   `icon` varchar(50) DEFAULT 'fa-check',
   `name_sk` varchar(50) NOT NULL,
   `name_cz` varchar(50) NOT NULL,
-  `name_pl` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `name_pl` varchar(50) NOT NULL,
+  `name_en` varchar(255) DEFAULT NULL,
+  `name_de` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `experience_tags` (
-  `experience_id` int(11) NOT NULL,
-  `tag_id` int(11) NOT NULL,
-  PRIMARY KEY (`experience_id`, `tag_id`),
-  FOREIGN KEY (`experience_id`) REFERENCES `experiences`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `tags` (`id`, `code`, `icon`, `name_sk`, `name_cz`, `name_pl`, `name_en`, `name_de`) VALUES
+(1,	'kids',	'fa-baby',	'Vhodné pre deti',	'Vhodné pro děti',	'Dla dzieci',	'Suitable for kids',	'Kinderfreundlich'),
+(2,	'dog',	'fa-dog',	'Pes povolený',	'Pes povolen',	'Pies dozwolony',	'Dog friendly',	'Hundefreundlich'),
+(3,	'barrier',	'fa-wheelchair',	'Bezbariérové',	'Bezbariérové',	'Dla niepełnosprawnych',	'Wheelchair accessible',	'Barrierefrei'),
+(4,	'indoor',	'fa-building',	'Interiér (Vnútri)',	'Interiér (Uvnitř)',	'Wewnątrz',	'Indoor',	'Innenbereich'),
+(5,	'outdoor',	'fa-sun',	'Exteriér (Vonku)',	'Exteriér (Venku)',	'Na zewnątrz',	'Outdoor',	'Außenbereich');
 
--- 3. Reset a naplnění Nových Kategorií
-TRUNCATE TABLE `subcategories`;
-TRUNCATE TABLE `categories`;
-
-INSERT INTO `categories` (`id`, `slug`, `icon`, `name_sk`, `name_cz`, `name_pl`) VALUES
-(1, 'top-tipy', 'fa-star', '⭐ TOP Tipy', '⭐ TOP Tipy', '⭐ TOP Tipy'),
-(2, 'voda-leto', 'fa-water', '🌊 Voda & Leto', '🌊 Voda & Léto', '🌊 Woda i Lato'),
-(3, 'relax-wellness', 'fa-spa', '🧖‍♀️ Relax & Wellness', '🧖‍♀️ Relax & Wellness', '🧖‍♀️ Relaks i Wellness'),
-(4, 'priroda-vylety', 'fa-tree', '🌲 Príroda & Výlety', '🌲 Příroda & Výlety', '🌲 Przyroda i Wycieczki'),
-(5, 'ubytovanie', 'fa-home', '🏡 Ubytovanie & Víkendy', '🏡 Ubytování & Víkendy', '🏡 Noclegi i Weekendy'),
-(6, 'zazitky-adrenalin', 'fa-bolt', '⚡ Zážitky & Adrenalín', '⚡ Zážitky & Adrenalin', '⚡ Wrażenia i Adrenalina'),
-(7, 'rodina-deti', 'fa-child', '👨‍👩‍👧‍👦 Rodina & Deti', '👨‍👩‍👧‍👦 Rodina & Děti', '👨‍👩‍👧‍👦 Rodzina i Dzieci'),
-(8, 'kultura-akcie', 'fa-theater-masks', '🎭 Kultúra & Akcie', '🎭 Kultura & Akce', '🎭 Kultura i Wydarzenia'),
-(9, 'zima-sneh', 'fa-snowflake', '❄️ Zima & Sneh', '❄️ Zima & Sníh', '❄️ Zima i Śnieg');
-
--- Podkategorie (Ukázka pro Vodu a Adrenalin, zbytek se doplní analogicky)
-INSERT INTO `subcategories` (`category_id`, `slug`, `name_sk`, `name_cz`, `name_pl`) VALUES
-(2, 'aquaparky', 'Aquaparky', 'Aquaparky', 'Aquaparki'),
-(2, 'kupaliska', 'Kúpaliská', 'Koupaliště', 'Baseny'),
-(6, 'bungee', 'Bungee jumping', 'Bungee jumping', 'Bungee jumping'),
-(6, 'lety-balonom', 'Lety balónom', 'Lety balónem', 'Loty balonem'),
-(9, 'lyzovanie', 'Lyžovanie', 'Lyžování', 'Narciarstwo');
-
--- 4. Naplnění Praktických Tagů (Filtry)
-INSERT INTO `tags` (`code`, `icon`, `name_sk`, `name_cz`, `name_pl`) VALUES
-('kids', 'fa-baby', 'Vhodné pre deti', 'Vhodné pro děti', 'Dla dzieci'),
-('dog', 'fa-dog', 'Pes povolený', 'Pes povolen', 'Pies dozwolony'),
-('barrier', 'fa-wheelchair', 'Bezbariérové', 'Bezbariérové', 'Dla niepełnosprawnych'),
-('indoor', 'fa-building', 'Interiér (Vnútri)', 'Interiér (Uvnitř)', 'Wewnątrz'),
-('outdoor', 'fa-sun', 'Exteriér (Vonku)', 'Exteriér (Venku)', 'Na zewnątrz');
-
-SET FOREIGN_KEY_CHECKS = 1;
-
--- 1. Aktualizace GPS souřadnic (Bratislava, Tatry, Praha, Brno...)
-
--- Bungee Lafranconi (Bratislava)
-UPDATE `experiences` SET `lat` = 48.148163, `lng` = 17.072465, `duration_minutes` = 45 WHERE `title_sk` LIKE '%Bungee%';
-
--- Střelba (Bratislava - okraj)
-UPDATE `experiences` SET `lat` = 48.196520, `lng` = 17.034580, `duration_minutes` = 90 WHERE `title_sk` LIKE '%streľba%';
-
--- Rafting (Čunovo - Divoká voda)
-UPDATE `experiences` SET `lat` = 48.031572, `lng` = 17.230948, `duration_minutes` = 120 WHERE `title_sk` LIKE '%Rafting%';
-
--- Wellness Tatry (Štrbské Pleso)
-UPDATE `experiences` SET `lat` = 49.120536, `lng` = 20.062334, `duration_minutes` = 2880 WHERE `title_sk` LIKE '%Wellness%';
-
--- Thajská masáž (Bratislava centrum)
-UPDATE `experiences` SET `lat` = 48.144520, `lng` = 17.112450, `duration_minutes` = 60 WHERE `title_sk` LIKE '%masáž%';
-
--- Sauna (Žilina)
-UPDATE `experiences` SET `lat` = 49.223150, `lng` = 18.739420, `duration_minutes` = 90 WHERE `title_sk` LIKE '%sauna%';
-
--- Ferrari (Slovakiaring)
-UPDATE `experiences` SET `lat` = 48.054560, `lng` = 17.564520, `duration_minutes` = 30 WHERE `title_sk` LIKE '%Ferrari%';
-
--- Tesla (Praha)
-UPDATE `experiences` SET `lat` = 50.075538, `lng` = 14.437800, `duration_minutes` = 45 WHERE `title_sk` LIKE '%Tesla%';
-
--- Offroad (Brno - Polygon)
-UPDATE `experiences` SET `lat` = 49.195060, `lng` = 16.606837, `duration_minutes` = 180 WHERE `title_sk` LIKE '%Offroad%';
-
--- Víno (Mikulov / Morava)
-UPDATE `experiences` SET `lat` = 48.805560, `lng` = 16.637890, `duration_minutes` = 120 WHERE `title_sk` LIKE '%vína%';
-
--- Sushi (Krakov - PL)
-UPDATE `experiences` SET `lat` = 50.064650, `lng` = 19.944980, `duration_minutes` = 180 WHERE `title_sk` LIKE '%sushi%';
-
-
--- 2. Přiřazení praktických tagů (Kids, Dog, Barrier...)
--- Nejdřív promažeme vazby, ať to neduplujeme
-TRUNCATE TABLE `experience_tags`;
-
--- Helper: Získání ID tagů
-SET @tag_kids = (SELECT id FROM tags WHERE code = 'kids');
-SET @tag_dog = (SELECT id FROM tags WHERE code = 'dog');
-SET @tag_in = (SELECT id FROM tags WHERE code = 'indoor');
-SET @tag_out = (SELECT id FROM tags WHERE code = 'outdoor');
-
--- Bungee: Outdoor
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_out FROM experiences WHERE `title_sk` LIKE '%Bungee%';
-
--- Rafting: Outdoor, Kids (jen starší, ale dáme to tam)
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_out FROM experiences WHERE `title_sk` LIKE '%Rafting%';
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_kids FROM experiences WHERE `title_sk` LIKE '%Rafting%';
-
--- Wellness: Indoor, Pes ne
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_in FROM experiences WHERE `title_sk` LIKE '%Wellness%';
-
--- Masáž: Indoor
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_in FROM experiences WHERE `title_sk` LIKE '%masáž%';
-
--- Offroad: Outdoor, Dog friendly
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_out FROM experiences WHERE `title_sk` LIKE '%Offroad%';
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_dog FROM experiences WHERE `title_sk` LIKE '%Offroad%';
-
--- Víno: Indoor + Outdoor
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_in FROM experiences WHERE `title_sk` LIKE '%vína%';
-INSERT INTO `experience_tags` (`experience_id`, `tag_id`) SELECT id, @tag_out FROM experiences WHERE `title_sk` LIKE '%vína%';
-
-
--- 1. Hlavní tabulka objednávek
-CREATE TABLE IF NOT EXISTS `orders` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `market_id` varchar(2) NOT NULL, -- sk, cz, pl
-  `order_number` varchar(20) NOT NULL UNIQUE, -- Např. 20260001
-  `status` ENUM('pending', 'paid', 'cancelled', 'refunded') DEFAULT 'pending',
-  
-  -- Údaje o zákazníkovi
-  `email` varchar(100) NOT NULL,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  
-  -- Fakturační údaje
-  `billing_street` varchar(255) DEFAULT NULL,
-  `billing_city` varchar(100) DEFAULT NULL,
-  `billing_zip` varchar(20) DEFAULT NULL,
-  `billing_country` char(2) DEFAULT NULL, -- SK, CZ, PL
-  
-  -- Finanční souhrn
-  `total_amount` decimal(10, 2) NOT NULL,
-  `currency` varchar(5) NOT NULL, -- €, Kč, zł
-  `tax_rate` decimal(5, 2) NOT NULL, -- Uložíme aktuální DPH (např. 20.00)
-  
-  `payment_method` varchar(50) DEFAULT 'card',
-  `payment_id` varchar(100) DEFAULT NULL, -- ID z platební brány
-  
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  
-  INDEX (`market_id`),
-  INDEX (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 2. Položky v objednávce (každý voucher)
-CREATE TABLE IF NOT EXISTS `order_items` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `order_id` int(11) NOT NULL,
-  `experience_id` int(11) NOT NULL,
-  
-  -- Snapshot údajů v čase prodeje (Klíčové pro účetnictví!)
-  `title_snapshot` varchar(255) NOT NULL, -- Název v jazyce, ve kterém nakoupil
-  `price_unit` decimal(10, 2) NOT NULL,
-  `qty` int(11) DEFAULT 1,
-  
-  FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE,
-  INDEX (`experience_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `experiences`
-ADD COLUMN `is_bookable` TINYINT(1) DEFAULT 1 AFTER `is_active`,
-ADD COLUMN `contact_phone` VARCHAR(50) NULL AFTER `is_bookable`,
-ADD COLUMN `contact_email` VARCHAR(100) NULL AFTER `contact_phone`,
-ADD COLUMN `contact_website` VARCHAR(255) NULL AFTER `contact_email`;
+-- 2026-02-06 08:28:33 UTC
