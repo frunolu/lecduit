@@ -1,7 +1,7 @@
 <?php
 /**
- * Import Real Experience Data
- * This script imports real locations and vouchers into the database
+ * Import Expanded Real Experience Data
+ * This script imports 36 real experiences into the database
  */
 
 require_once __DIR__ . '/Database.php';
@@ -9,62 +9,66 @@ require_once __DIR__ . '/Database.php';
 try {
     $pdo = Database::getInstance();
 
-    echo "=== Starting Real Data Import ===\n\n";
+    echo "=== Starting Expanded Data Import ===\n\n";
 
-    // Read the SQL file
-    $sql = file_get_contents(__DIR__ . '/real_data.sql');
+    // First, delete old experiences
+    echo "Clearing old experiences...\n";
+    $pdo->exec("DELETE FROM experiences WHERE id >= 1");
+    echo "✓ Old data cleared\n\n";
+
+    // Read and execute the SQL file
+    $sql = file_get_contents(__DIR__ . '/sql.txt');
 
     if ($sql === false) {
-        die("ERROR: Could not read real_data.sql file\n");
+        die("ERROR: Could not read sql.txt file\n");
     }
 
-    // Split by semicolons to get individual statements
-    $statements = array_filter(
-        array_map('trim', explode(';', $sql)),
-        function ($stmt) {
-        return !empty($stmt) &&
-        !preg_match('/^--/', $stmt) &&
-        $stmt !== '';
-    }
-    );
-
+    // Remove comments and split by semicolons
+    $lines = explode("\n", $sql);
+    $currentStatement = '';
     $successCount = 0;
-    $errorCount = 0;
 
-    // Execute each statement
-    foreach ($statements as $statement) {
-        try {
-            $pdo->exec($statement);
-            $successCount++;
+    foreach ($lines as $line) {
+        $line = trim($line);
 
-            // Show progress for important operations
-            if (stripos($statement, 'INSERT INTO categories') !== false) {
-                echo "✓ Categories imported\n";
-            }
-            elseif (stripos($statement, 'INSERT INTO locations') !== false) {
-                echo "✓ Locations imported\n";
-            }
-            elseif (stripos($statement, 'INSERT INTO vouchers') !== false) {
-                echo "✓ Vouchers imported\n";
-            }
-            elseif (stripos($statement, 'TRUNCATE') !== false) {
-                echo "✓ Cleared old data\n";
-            }
+        // Skip comments and empty lines
+        if (empty($line) || substr($line, 0, 2) === '--') {
+            continue;
         }
-        catch (PDOException $e) {
-            $errorCount++;
-            // Only show errors for important operations
-            if (stripos($statement, 'INSERT') !== false || stripos($statement, 'TRUNCATE') !== false) {
-                echo "⚠ Warning: " . $e->getMessage() . "\n";
+
+        $currentStatement .= ' ' . $line;
+
+        // If line ends with semicolon, execute the statement
+        if (substr($line, -1) === ';') {
+            $currentStatement = trim($currentStatement);
+
+            try {
+                if (!empty($currentStatement) && $currentStatement !== ';') {
+                    $pdo->exec($currentStatement);
+                    $successCount++;
+
+                    // Show progress for INSERT statements
+                    if (stripos($currentStatement, 'INSERT INTO experiences') !== false) {
+                        // Extract experience title for progress
+                        if (preg_match('/\((\d+),.*?\'([^\']+)\'/', $currentStatement, $matches)) {
+                            echo "✓ Added: {$matches[2]}\n";
+                        }
+                    }
+                }
             }
+            catch (PDOException $e) {
+                // Silently skip errors for DELETE and ALTER statements
+                if (stripos($currentStatement, 'INSERT') !== false) {
+                    echo "⚠ Warning: " . $e->getMessage() . "\n";
+                }
+            }
+
+            $currentStatement = '';
         }
     }
 
     echo "\n=== Import Complete ===\n";
-    echo "Statements executed: $successCount\n";
-    if ($errorCount > 0) {
-        echo "Warnings: $errorCount\n";
-    }
+    echo "SQL statements executed: $successCount\n";
 
     // Verify the import
     echo "\n=== Verification ===\n";
@@ -77,17 +81,28 @@ try {
     $count = $result->fetchColumn();
     echo "Experiences: $count\n";
 
-    // Show some sample experiences
-    $result = $pdo->query("SELECT title_sk, country FROM experiences WHERE id >= 100 LIMIT 5");
-    $samples = $result->fetchAll();
-    if (!empty($samples)) {
-        echo "\nSample experiences added:\n";
-        foreach ($samples as $exp) {
-            echo "  - {$exp['title_sk']} ({$exp['country']})\n";
-        }
+    // Show breakdown by country
+    echo "\n=== Breakdown by Country ===\n";
+    $result = $pdo->query("SELECT country, COUNT(*) as cnt FROM experiences GROUP BY country ORDER BY country");
+    while ($row = $result->fetch()) {
+        $countryName = ['sk' => 'Slovakia', 'cz' => 'Czech Republic', 'pl' => 'Poland'][$row['country']] ?? $row['country'];
+        echo "{$countryName}: {$row['cnt']}\n";
     }
 
-    echo "\n✅ Real data successfully imported!\n";
+    // Show breakdown by subcategory
+    echo "\n=== Breakdown by Subcategory ===\n";
+    $result = $pdo->query("
+        SELECT s.name_sk, COUNT(e.id) as cnt 
+        FROM subcategories s 
+        LEFT JOIN experiences e ON e.subcategory_id = s.id 
+        GROUP BY s.id, s.name_sk 
+        ORDER BY cnt DESC
+    ");
+    while ($row = $result->fetch()) {
+        echo "{$row['name_sk']}: {$row['cnt']}\n";
+    }
+
+    echo "\n✅ Expanded data successfully imported!\n";
     echo "You can now browse the catalog at http://localhost:8000\n";
 
 }
