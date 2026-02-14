@@ -1,0 +1,91 @@
+# ============================================
+# LECDUIT - Multi-Domain Configuration
+# ============================================
+# This file handles all domain aliases and language detection
+# Domains: lecduit.sk, lecduit.cz, lecduit.pl, lecduit.eu
+# ============================================
+
+RewriteEngine On
+
+# Force HTTPS (uncomment when SSL is active)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# ============================================
+# Domain-based Language Detection
+# ============================================
+
+# Czech domain - set Czech language
+RewriteCond %{HTTP_HOST} ^(www\.)?lecduit\.cz$ [NC]
+RewriteCond %{QUERY_STRING} !lang=
+RewriteRule ^(.*)$ /$1?lang=cz [QSA,L]
+
+# Polish domain - set Polish language
+RewriteCond %{HTTP_HOST} ^(www\.)?lecduit\.pl$ [NC]
+RewriteCond %{QUERY_STRING} !lang=
+RewriteRule ^(.*)$ /$1?lang=pl [QSA,L]
+
+# EU domain - set English language
+RewriteCond %{HTTP_HOST} ^(www\.)?lecduit\.eu$ [NC]
+RewriteCond %{QUERY_STRING} !lang=
+RewriteRule ^(.*)$ /$1?lang=en [QSA,L]
+
+# Slovak domain - set Slovak language (default)
+RewriteCond %{HTTP_HOST} ^(www\.)?lecduit\.sk$ [NC]
+RewriteCond %{QUERY_STRING} !lang=
+RewriteRule ^(.*)$ /$1?lang=sk [QSA,L]
+
+# ============================================
+# WWW Redirect (optional - uncomment if needed)
+# ============================================
+# Redirect www to non-www
+# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# ============================================
+# PHP Configuration
+# ============================================
+# Set default charset
+php_value default_charset "UTF-8"
+
+# Increase upload limits (if needed)
+# php_value upload_max_filesize 10M
+# php_value post_max_size 10M
+
+# ============================================
+# Security Headers
+# ============================================
+# Prevent clickjacking
+Header always set X-Frame-Options "SAMEORIGIN"
+
+# XSS Protection
+Header always set X-XSS-Protection "1; mode=block"
+
+# Prevent MIME sniffing
+Header always set X-Content-Type-Options "nosniff"
+
+# ============================================
+# Error Pages (optional)
+# ============================================
+# ErrorDocument 404 /404.php
+# ErrorDocument 500 /500.php
+
+# ============================================
+# Cache Control (optional - for better performance)
+# ============================================
+# Cache images for 1 month
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
+    Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>
+
+# Cache CSS and JS for 1 week
+<FilesMatch "\.(css|js)$">
+    Header set Cache-Control "max-age=604800, public"
+</FilesMatch>
+
+# ============================================
+# Compression (optional - for better performance)
+# ============================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
