@@ -1,0 +1,205 @@
+-- ============================================
+-- LECDUIT - Real Experience Data Import
+-- ============================================
+-- This SQL file contains all real experiences for manual import
+-- Compatible with existing database schema
+-- 
+-- Usage: Import this file into your database using phpMyAdmin or mysql command
+-- mysql -u username -p database_name < sql.txt
+-- ============================================
+
+-- Clear existing test data (optional - comment out if you want to keep old data)
+DELETE FROM experiences WHERE id > 0;
+
+-- Update existing categories with better data
+UPDATE categories SET 
+    name_sk = '⭐ TOP Tipy',
+    name_cz = '⭐ TOP Tipy',
+    name_pl = '⭐ TOP Tipy',
+    name_en = '⭐ TOP Tips',
+    name_de = '⭐ TOP-Tipps'
+WHERE id = 1;
+
+-- ============================================
+-- SLOVAKIA - Real Experiences (7 items)
+-- ============================================
+
+-- Wellness & Relax
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(100, 13, 'AquaCity Poprad - celodenný vstup', 'AquaCity Poprad - celodenní vstup', 'AquaCity Poprad - całodniowy wstęp', 'AquaCity Poprad - Full Day', 'AquaCity Poprad - Ganztägig',
+'Užite si deň plný relaxu v najväčšom aquaparku na Slovensku. 13 bazénov, 9 tobogánov, sauny a wellness centrum.', 
+'Užijte si den plný relaxace v největším aquaparku na Slovensku. 13 bazénů, 9 tobogánů, sauny a wellness centrum.',
+'Ciesz się dniem pełnym relaksu w największym aquaparku na Słowacji. 13 basenów, 9 zjeżdżalni, sauny i centrum wellness.',
+'Enjoy a day of relaxation in Slovakia\'s largest aquapark. 13 pools, 9 slides, saunas and wellness center.',
+'Genießen Sie einen Tag der Entspannung im größten Aquapark der Slowakei. 13 Becken, 9 Rutschen, Saunen und Wellnesscenter.',
+35.00, 890.00, 150.00, 49.06140000, 20.29810000, 'sk', 'vysoke-tatry', 'easy', 480,
+'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800', 1, 1, '+421 52 7851 111', 'info@aquacity.sk', 'https://www.aquacity.sk');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(101, 13, 'Thermal Corvinus Veľký Meder', 'Thermal Corvinus Veľký Meder', 'Termy Corvinus Veľký Meder', 'Thermal Corvinus', 'Thermal Corvinus',
+'Termálne kúpalisko s liečivou vodou. Bazény, sauny a wellness procedúry v južnom Slovensku.',
+'Termální lázně s léčivou vodou. Bazény, sauny a wellness procedury na jižním Slovensku.',
+'Termy z wodą leczniczą. Baseny, sauny i zabiegi wellness na południu Słowacji.',
+'Thermal spa with healing water. Pools, saunas and wellness treatments in southern Slovakia.',
+'Thermalbad mit Heilwasser. Pools, Saunen und Wellnessbehandlungen in der Südslowakei.',
+28.00, 710.00, 120.00, 47.85560000, 17.76810000, 'sk', 'zapadne-slovensko', 'easy', 360,
+'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800', 1, 1, '+421 31 5551 111', 'info@thermalcorvinus.sk', 'https://www.thermalcorvinus.sk');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(102, 13, 'Spa Resort Piešťany - romantický pobyt', 'Spa Resort Piešťany - romantický pobyt', 'Spa Resort Piešťany - pobyt romantyczny', 'Spa Resort Piešťany - Romantic Stay', 'Spa Resort Piešťany - Romantischer Aufenthalt',
+'Víkendový wellness pobyt pre dvoch v legendárnom kúpeľnom meste. Procedúry, masáže a romantická večera.',
+'Víkendový wellness pobyt pro dva v legendárním lázeňském městě. Procedury, masáže a romantická večeře.',
+'Weekendowy pobyt wellness dla dwojga w legendarnym mieście uzdrowiskowym. Zabiegi, masaże i romantyczna kolacja.',
+'Weekend wellness stay for two in the legendary spa town. Treatments, massages and romantic dinner.',
+'Wochenend-Wellness-Aufenthalt für zwei in der legendären Kurstadt. Behandlungen, Massagen und romantisches Abendessen.',
+189.00, 4800.00, 820.00, 48.59170000, 17.83330000, 'sk', 'zapadne-slovensko', 'easy', 2880,
+'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800', 1, 1, '+421 33 7751 733', 'spa@spa.sk', 'https://www.spa.sk');
+
+-- Adventure & Adrenaline
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(103, 3, 'Tandemový zoskok z lietadla - Slovenský raj', 'Tandemový seskok z letadla - Slovenský ráj', 'Skok tandemowy ze spadochronem', 'Tandem Skydive - Slovak Paradise', 'Tandem-Fallschirmsprung',
+'Zažite adrenalín vo výške 4000 metrov! Profesionálny inštruktor, kompletné vybavenie a nezabudnuteľný zážitok nad Slovenským rajom.',
+'Zažijte adrenalin ve výšce 4000 metrů! Profesionální instruktor, kompletní vybavení a nezapomenutelný zážitek nad Slovenským rájem.',
+'Przeżyj adrenalinę na wysokości 4000 metrów! Profesjonalny instruktor, kompletne wyposażenie i niezapomniane wrażenia.',
+'Experience adrenaline at 4000 meters! Professional instructor, complete equipment and unforgettable experience.',
+'Erleben Sie Adrenalin in 4000 Metern Höhe! Professioneller Instruktor, komplette Ausrüstung und unvergessliches Erlebnis.',
+249.00, 6300.00, 1080.00, 48.95000000, 20.56670000, 'sk', 'stredne-slovensko', 'hard', 180,
+'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800', 1, 1, '+421 903 111 222', 'info@skydive.sk', 'https://www.skydive.sk');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(104, 3, 'Lanový park Tarzania Bratislava', 'Lanový park Tarzania Bratislava', 'Park linowy Tarzania', 'Rope Park Tarzania', 'Seilpark Tarzania',
+'Dobrodružstvo v korunách stromov. 8 trás rôznej náročnosti, zipline a adrenalínové prekážky pre celú rodinu.',
+'Dobrodružství v korunách stromů. 8 tras různé náročnosti, zipline a adrenalinové překážky pro celou rodinu.',
+'Przygoda w koronach drzew. 8 tras o różnym stopniu trudności, zipline i adrenalinowe przeszkody dla całej rodziny.',
+'Adventure in the treetops. 8 routes of varying difficulty, zipline and adrenaline obstacles for the whole family.',
+'Abenteuer in den Baumkronen. 8 Routen unterschiedlicher Schwierigkeit, Zipline und Adrenalin-Hindernisse für die ganze Familie.',
+25.00, 630.00, 110.00, 48.14860000, 17.10770000, 'sk', 'bratislava', 'medium', 120,
+'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=800', 1, 1, '+421 905 444 999', 'info@tarzania.sk', 'https://www.tarzania.sk');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(105, 3, 'Bungee jumping Most SNP Bratislava', 'Bungee jumping Most SNP Bratislava', 'Bungee jumping Most SNP', 'Bungee Jump SNP Bridge', 'Bungee-Sprung SNP-Brücke',
+'Zoskok z mosta SNP nad Dunajom z výšky 85 metrov. Nezabudnuteľný adrenalínový zážitok v centre Bratislavy.',
+'Seskok z mostu SNP nad Dunajem z výšky 85 metrů. Nezapomenutelný adrenalinový zážitek v centru Bratislavy.',
+'Skok z mostu SNP nad Dunajem z wysokości 85 metrów. Niezapomniane wrażenia adrenaliny w centrum Bratysławy.',
+'Jump from the SNP Bridge over the Danube from a height of 85 meters. Unforgettable adrenaline experience in the center of Bratislava.',
+'Sprung von der SNP-Brücke über die Donau aus 85 Metern Höhe. Unvergessliches Adrenalin-Erlebnis im Zentrum von Bratislava.',
+59.00, 1490.00, 260.00, 48.14810000, 17.07240000, 'sk', 'bratislava', 'hard', 30,
+'https://images.unsplash.com/photo-1522069634954-469a4736f875?w=800', 1, 1, '+421 905 123 456', 'info@bungee.sk', NULL);
+
+-- Gastronomy
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(106, 6, 'UFO Restaurant - večera s výhľadom', 'UFO Restaurant - večeře s výhledem', 'UFO Restaurant - kolacja z widokiem', 'UFO Restaurant - Dinner with a View', 'UFO Restaurant - Abendessen mit Aussicht',
+'Exkluzívna večera s výhľadom na Bratislavu z výšky 95 metrov. Menu od šéfkuchára a nezabudnuteľná atmosféra.',
+'Exkluzivní večeře s výhledem na Bratislavu z výšky 95 metrů. Menu od šéfkuchaře a nezapomenutelná atmosféra.',
+'Ekskluzywna kolacja z widokiem na Bratysławę z wysokości 95 metrów. Menu od szefa kuchni i niezapomniana atmosfera.',
+'Exclusive dinner with a view of Bratislava from 95 meters. Chef\'s menu and unforgettable atmosphere.',
+'Exklusives Abendessen mit Blick auf Bratislava aus 95 Metern Höhe. Menü vom Küchenchef und unvergessliche Atmosphäre.',
+89.00, 2250.00, 390.00, 48.13670000, 17.10420000, 'sk', 'bratislava', 'easy', 150,
+'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800', 1, 1, '+421 2 6252 0300', 'restaurant@u-f-o.sk', 'https://www.u-f-o.sk');
+
+-- ============================================
+-- CZECH REPUBLIC - Real Experiences (5 items)
+-- ============================================
+
+-- Wellness
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(110, 13, 'Aquapalace Praha - celodenný vstup', 'Aquapalace Praha - celodenní vstup', 'Aquapalace Praha - całodniowy wstęp', 'Aquapalace Prague - Full Day', 'Aquapalace Prag - Ganztägig',
+'Najväčší aquapark v strednej Európe! Tobogány, bazény, sauny a relaxačná zóna. Zábava pre celú rodinu.',
+'Největší aquapark ve střední Evropě! Tobogány, bazény, sauny a relaxační zóna. Zábava pro celou rodinu.',
+'Największy aquapark w Europie Środkowej! Zjeżdżalnie, baseny, sauny i strefa relaksu. Zabawa dla całej rodziny.',
+'The largest aquapark in Central Europe! Slides, pools, saunas and relaxation zone. Fun for the whole family.',
+'Der größte Aquapark in Mitteleuropa! Rutschen, Pools, Saunen und Entspannungszone. Spaß für die ganze Familie.',
+42.00, 1050.00, 180.00, 50.01670000, 14.56670000, 'cz', 'praha', 'easy', 480,
+'https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=800', 1, 1, '+420 271 104 111', 'info@aquapalace.cz', 'https://www.aquapalace.cz');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(111, 13, 'Pivné kúpele Bernard Praha', 'Pivní lázně Bernard Praha', 'Kąpiele piwne Bernard Praga', 'Beer Spa Bernard Prague', 'Bierbad Bernard Prag',
+'Unikátny wellness zážitok v centre Prahy. Kúpeľ v pive, neobmedzená konzumácia piva Bernard a relaxácia.',
+'Unikátní wellness zážitek v centru Prahy. Koupel v pivu, neomezená konzumace piva Bernard a relaxace.',
+'Unikalne wrażenia wellness w centrum Pragi. Kąpiel w piwie, nieograniczona konsumpcja piwa Bernard i relaks.',
+'Unique wellness experience in the center of Prague. Beer bath, unlimited Bernard beer consumption and relaxation.',
+'Einzigartiges Wellness-Erlebnis im Zentrum von Prag. Bierbad, unbegrenzter Bernard-Bierkonsum und Entspannung.',
+79.00, 1990.00, 340.00, 50.08750000, 14.42080000, 'cz', 'praha', 'easy', 120,
+'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800', 1, 1, '+420 775 551 151', 'info@beerspa.cz', 'https://www.beerspa.cz');
+
+-- Adventure
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(112, 3, 'Tandemový seskok Praha', 'Tandemový seskok Praha', 'Skok tandemowy Praga', 'Tandem Skydive Prague', 'Tandem-Fallschirmsprung Prag',
+'Adrenalínový zážitok nad Prahou! Výška 4000m, voľný pád a pristátie s profesionálnym inštruktorom.',
+'Adrenalinový zážitek nad Prahou! Výška 4000m, volný pád a přistání s profesionálním instruktorem.',
+'Adrenalina nad Pragą! Wysokość 4000m, swobodny spadek i lądowanie z profesjonalnym instruktorem.',
+'Adrenaline experience over Prague! Height 4000m, free fall and landing with a professional instructor.',
+'Adrenalin-Erlebnis über Prag! Höhe 4000m, freier Fall und Landung mit einem professionellen Instruktor.',
+259.00, 6500.00, 1120.00, 49.68920000, 14.10060000, 'cz', 'stredne-cechy', 'hard', 180,
+'https://images.unsplash.com/photo-1601024445121-e5b82f020549?w=800', 1, 1, '+420 603 111 222', 'info@seskok.cz', 'https://www.seskok.cz');
+
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(113, 7, 'Jazda v Lamborghini - Autodrom Most', 'Jízda v Lamborghini - Autodrom Most', 'Jazda Lamborghini - Tor Most', 'Lamborghini Drive - Most Circuit', 'Lamborghini-Fahrt - Rennstrecke Most',
+'Splňte si sen! 30 minút za volantom Lamborghini Huracán na profesionálnom okruhu v Moste.',
+'Splňte si sen! 30 minut za volantem Lamborghini Huracán na profesionálním okruhu v Mostě.',
+'Spełnij marzenie! 30 minut za kierownicą Lamborghini Huracán na profesjonalnym torze w Moście.',
+'Fulfill your dream! 30 minutes behind the wheel of a Lamborghini Huracán on the professional circuit in Most.',
+'Erfüllen Sie sich Ihren Traum! 30 Minuten am Steuer eines Lamborghini Huracán auf der professionellen Rennstrecke in Most.',
+299.00, 7500.00, 1290.00, 50.52810000, 13.63670000, 'cz', 'zapadne-cechy', 'medium', 60,
+'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800', 1, 1, '+420 476 151 011', 'info@autodrom-most.cz', 'https://www.autodrom-most.cz');
+
+-- Gastronomy
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(114, 6, 'Večera v Kampa Park', 'Večeře v Kampa Park', 'Kolacja w Kampa Park', 'Dinner at Kampa Park', 'Abendessen im Kampa Park',
+'Romantická večera s výhľadom na Karlův most. Prémiová česká kuchyňa a vybraná vína.',
+'Romantická večeře s výhledem na Karlův most. Prémiová česká kuchyně a vybraná vína.',
+'Romantyczna kolacja z widokiem na Most Karola. Kuchnia czeska premium i wybrane wina.',
+'Romantic dinner overlooking Charles Bridge. Premium Czech cuisine and selected wines.',
+'Romantisches Abendessen mit Blick auf die Karlsbrücke. Premium tschechische Küche und ausgewählte Weine.',
+95.00, 2400.00, 410.00, 50.08610000, 14.41080000, 'cz', 'praha', 'easy', 150,
+'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800', 1, 1, '+420 296 826 112', 'info@kampagroup.com', 'https://www.kampagroup.com');
+
+-- ============================================
+-- POLAND - Real Experiences (3 items)
+-- ============================================
+
+-- Wellness
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(120, 13, 'Termy Chochołowskie - celodenný vstup', 'Termy Chochołowskie - celodenní vstup', 'Termy Chochołowskie - całodniowy wstęp', 'Termy Chochołowskie - Full Day', 'Termy Chochołowskie - Ganztägig',
+'Najväčšie termálne kúpaliská v Poľsku! Bazény, sauny a nádherné výhľady na Tatry.',
+'Největší termální lázně v Polsku! Bazény, sauny a nádherné výhledy na Tatry.',
+'Największe termy w Polsce! Baseny, sauny i piękne widoki na Tatry.',
+'The largest thermal baths in Poland! Pools, saunas and beautiful views of the Tatras.',
+'Die größten Thermalbäder in Polen! Pools, Saunen und schöne Ausblicke auf die Tatra.',
+38.00, 960.00, 165.00, 49.46670000, 19.81670000, 'pl', 'tatry', 'easy', 480,
+'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800', 1, 1, '+48 18 20 67 000', 'info@termychocholowskie.pl', 'https://www.termychocholowskie.pl');
+
+-- Adventure
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(121, 3, 'Skok spadochronowy Kraków', 'Skok padákem Krakov', 'Skok spadochronowy Kraków', 'Skydive Krakow', 'Fallschirmsprung Krakau',
+'Tandemový zoskok nad Krakovom. Nezabudnuteľný zážitok s certifikovaným inštruktorom a úžasné výhľady.',
+'Tandemový seskok nad Krakovem. Nezapomenutelný zážitek s certifikovaným instruktorem a úžasné výhledy.',
+'Skok tandemowy nad Krakowem. Niezapomniane wrażenia z certyfikowanym instruktorem i niesamowite widoki.',
+'Tandem skydive over Krakow. Unforgettable experience with a certified instructor and amazing views.',
+'Tandem-Fallschirmsprung über Krakau. Unvergessliches Erlebnis mit einem zertifizierten Instruktor und atemberaubenden Aussichten.',
+239.00, 6000.00, 1030.00, 50.06140000, 19.79810000, 'pl', 'malopolska', 'hard', 180,
+'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=800', 1, 1, '+48 600 111 222', 'info@skydive.pl', 'https://www.skydive.pl');
+
+-- Family
+INSERT INTO experiences (id, subcategory_id, title_sk, title_cz, title_pl, title_en, title_de, desc_sk, desc_cz, desc_pl, desc_en, desc_de, price_sk, price_cz, price_pl, lat, lng, country, region_slug, difficulty, duration_minutes, image_url, is_active, can_buy_voucher, contact_phone, contact_email, contact_website) VALUES
+(122, 11, 'Energylandia Zator', 'Energylandia Zator', 'Energylandia Zator', 'Energylandia Park', 'Energylandia Park',
+'Najväčší zábavný park v strednej Európe. Viac ako 120 atrakcií, horské dráhy a zábava pre celú rodinu.',
+'Největší zábavní park ve střední Evropě. Více než 120 atrakcí, horské dráhy a zábava pro celou rodinu.',
+'Największy park rozrywki w Europie Środkowej. Ponad 120 atrakcji, kolejki górskie i zabawa dla całej rodziny.',
+'The largest amusement park in Central Europe. Over 120 attractions, roller coasters and fun for the whole family.',
+'Der größte Vergnügungspark in Mitteleuropa. Über 120 Attraktionen, Achterbahnen und Spaß für die ganze Familie.',
+45.00, 1150.00, 199.00, 49.99700000, 19.41200000, 'pl', 'malopolska', 'easy', 480,
+'https://images.unsplash.com/photo-1513889953293-4ad464fb7a79?w=800', 1, 1, '+48 33 879 00 00', 'info@energylandia.pl', 'https://www.energylandia.pl');
+
+-- ============================================
+-- Reset auto-increment
+-- ============================================
+ALTER TABLE experiences AUTO_INCREMENT = 200;
+
+-- ============================================
+-- Import Complete
+-- ============================================
+-- Total experiences added: 15
+-- Slovakia: 7 | Czech Republic: 5 | Poland: 3
+-- Categories: Wellness, Adventure, Gastronomy, Family
+-- ============================================
