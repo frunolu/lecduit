@@ -106,9 +106,10 @@ endforeach; ?>
                 </div>
                 <?php
 else: ?>
-                <a href="login_google.php"
-                    class="ml-1 pl-2 border-l border-slate-100 text-xs font-bold uppercase text-slate-500 hover:text-lec-teal flex items-center gap-1 p-2">
-                    <i class="fa-brands fa-google"></i> <span class="hidden sm:inline">Login</span>
+                <a href="login.php"
+                    class="px-4 sm:px-6 py-2 sm:py-3 bg-lec-orange text-white rounded-2xl font-black text-xs sm:text-sm uppercase hover:scale-105 active:scale-95 transition-all shadow-lg shadow-lec-orange/20">
+                    <i class="fa fa-user mr-1 sm:mr-2"></i>
+                    <?php echo $t['login']; ?>
                 </a>
                 <?php
 endif; ?>
