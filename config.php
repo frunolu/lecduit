@@ -9,17 +9,19 @@ $host = $_SERVER['HTTP_HOST'];
 
 // --- 1. DETEKCE TRHU A MĚNY ---
 $market = [
-    'id'        => 'sk',
-    'currency'  => '€',
+    'id' => 'sk',
+    'currency' => '€',
     'price_col' => 'price_sk',
-    'def_lang'  => 'sk'
+    'def_lang' => 'sk'
 ];
 
 if (strpos($host, 'lecduit.cz') !== false) {
     $market = ['id' => 'cz', 'currency' => 'Kč', 'price_col' => 'price_cz', 'def_lang' => 'cz'];
-} elseif (strpos($host, 'lecduit.pl') !== false) {
+}
+elseif (strpos($host, 'lecduit.pl') !== false) {
     $market = ['id' => 'pl', 'currency' => 'zł', 'price_col' => 'price_pl', 'def_lang' => 'pl'];
-} elseif (strpos($host, 'lecduit.eu') !== false) {
+}
+elseif (strpos($host, 'lecduit.eu') !== false) {
     $market = ['id' => 'eu', 'currency' => '€', 'price_col' => 'price_sk', 'def_lang' => 'en'];
 }
 
@@ -50,7 +52,8 @@ $txt = [
         'f_name' => 'Meno', 'l_name' => 'Priezvisko', 'email' => 'E-mail', 'phone' => 'Telefón',
         'street' => 'Ulica a č.p.', 'city' => 'Mesto', 'zip' => 'PSČ', 'country_billing' => 'Krajina',
         'finish_order' => 'Dokončiť objednávku', 'total' => 'Celkom k úhrade', 'remove' => 'Odstrániť',
-        'contact' => 'Kontakt', 'visit_web' => 'Navštíviť web', 'more_info' => 'Viac informácií'
+        'contact' => 'Kontakt', 'visit_web' => 'Navštíviť web', 'more_info' => 'Viac informácií',
+        'catalog_info' => 'Toto je katalóg. Pre objednanie kontaktujte poskytovateľa.'
     ],
     'cz' => [
         'validity' => 'Platnost 12 měsíců', 'delivery' => 'E-mailem ihned', 'duration' => 'Trvání',
@@ -62,7 +65,8 @@ $txt = [
         'f_name' => 'Jméno', 'l_name' => 'Příjmení', 'email' => 'E-mail', 'phone' => 'Telefon',
         'street' => 'Ulice a č.p.', 'city' => 'Město', 'zip' => 'PSČ', 'country_billing' => 'Země',
         'finish_order' => 'Dokončit objednávku', 'total' => 'Celkem k úhradě', 'remove' => 'Odstranit',
-        'contact' => 'Kontakt', 'visit_web' => 'Navštívit web', 'more_info' => 'Více informací'
+        'contact' => 'Kontakt', 'visit_web' => 'Navštívit web', 'more_info' => 'Více informací',
+        'catalog_info' => 'Toto je katalog. Pro objednání kontaktujte poskytovatele.'
     ],
     'pl' => [
         'validity' => 'Ważność 12 miesięcy', 'delivery' => 'E-mail natychmiast', 'duration' => 'Czas trwania',
@@ -74,7 +78,8 @@ $txt = [
         'f_name' => 'Imię', 'l_name' => 'Nazwisko', 'email' => 'E-mail', 'phone' => 'Telefon',
         'street' => 'Ulica i nr', 'city' => 'Miasto', 'zip' => 'Kod pocztowy', 'country_billing' => 'Kraj',
         'finish_order' => 'Złóż zamówienie', 'total' => 'Suma do zapłaty', 'remove' => 'Usuń',
-        'contact' => 'Kontakt', 'visit_web' => 'Odwiedź stronę', 'more_info' => 'Więcej informacji'
+        'contact' => 'Kontakt', 'visit_web' => 'Odwiedź stronę', 'more_info' => 'Więcej informacji',
+        'catalog_info' => 'To jest katalog. Aby zamówić, skontaktuj się z dostawcą.'
     ],
     'en' => [
         'validity' => '12 months validity', 'delivery' => 'Instant e-mail delivery', 'duration' => 'Duration',
@@ -86,7 +91,8 @@ $txt = [
         'f_name' => 'First Name', 'l_name' => 'Last Name', 'email' => 'E-mail', 'phone' => 'Phone',
         'street' => 'Street', 'city' => 'City', 'zip' => 'ZIP', 'country_billing' => 'Country',
         'finish_order' => 'Complete Order', 'total' => 'Total Amount', 'remove' => 'Remove',
-        'contact' => 'Contact', 'visit_web' => 'Visit website', 'more_info' => 'More info'
+        'contact' => 'Contact', 'visit_web' => 'Visit website', 'more_info' => 'More info',
+        'catalog_info' => 'This is a catalog. To order, please contact the provider.'
     ],
     'de' => [
         'validity' => '12 Monate Gültigkeit', 'delivery' => 'Sofort per E-Mail', 'duration' => 'Dauer',
@@ -98,23 +104,26 @@ $txt = [
         'f_name' => 'Vorname', 'l_name' => 'Nachname', 'email' => 'E-Mail', 'phone' => 'Telefon',
         'street' => 'Straße', 'city' => 'Stadt', 'zip' => 'PLZ', 'country_billing' => 'Land',
         'finish_order' => 'Zahlungspflichtig bestellen', 'total' => 'Gesamtbetrag', 'remove' => 'Löschen',
-        'contact' => 'Kontakt', 'visit_web' => 'Webseite besuchen', 'more_info' => 'Mehr Info'
+        'contact' => 'Kontakt', 'visit_web' => 'Webseite besuchen', 'more_info' => 'Mehr Info',
+        'catalog_info' => 'Dies ist ein Katalog. Zur Bestellung kontaktieren Sie bitte den Anbieter.'
     ]
 ];
 
 $t = $txt[$lang];
 $market_id = $market['id'];
-$currency  = $market['currency'];
+$currency = $market['currency'];
 $price_col = $market['price_col'];
-$suffix    = '_' . $lang;
+$suffix = '_' . $lang;
 $pdo = Database::getInstance();
 
-function formatPrice($amount) {
+function formatPrice($amount)
+{
     global $currency;
     $decimals = ($currency === '€') ? 2 : 0;
     return number_format($amount, $decimals, ',', ' ') . ' ' . $currency;
 }
 
-function h($text) {
+function h($text)
+{
     return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
 }
